@@ -465,15 +465,4 @@ const formatError = (error) => {
   };
 };
 
-app.get('/', (req, res) => {
-    req.toString()
-    res.send('<h1>Server is running</h1>')
-});
 
-app.get('/login', (req, res) => {
-    req.toString()
-    res.send('<h1>Login page</h1>')
-});
-
-
-// app.listen(3000);  // PORT
