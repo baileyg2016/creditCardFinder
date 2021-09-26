@@ -3,6 +3,6 @@ Open a browser to http://localhost:3000 and if you get a message, you are at the
 
 
 Extra modules you might need to add:
-npm install dotenv
-npm install plaid
-npm install moment
+yarn add dotenv
+yarn add plaid
+yarn add moment
