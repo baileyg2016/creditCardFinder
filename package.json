@@ -6,6 +6,10 @@
   "license": "MIT",
   "workspaces": ["packages/api", "packages/frontEnd"],
   "private": "true",
+  "scripts": {
+    "start:client": "cd packages/client && yarn start && cd ../..",
+    "start:api": " cd packages/api && yarn start && cd ../.."
+  },
   "engines": {
     "node": ">= 14.15.0"
   }
