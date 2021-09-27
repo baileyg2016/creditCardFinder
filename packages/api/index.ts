@@ -1,6 +1,19 @@
+import { AxiosResponse } from "axios";
+import {
+  CountryCode,
+  LinkTokenCreateRequest,
+  Products,
+  Configuration,
+  PlaidApi,
+  PlaidEnvironments,
+  PaymentAmountCurrencyEnum,
+  InstitutionsGetByIdRequest,
+  AssetReportGetRequest,
+  AssetReportGetResponse
+} from "plaid";
+
 // read env vars from .env file
 require('dotenv').config();
-const { Configuration, PlaidApi, PlaidEnvironments } = require('plaid');
 const util = require('util');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -14,15 +27,13 @@ const PLAID_ENV = process.env.PLAID_ENV || 'sandbox';
 // PLAID_PRODUCTS is a comma-separated list of products to use when initializing
 // Link. Note that this list must contain 'assets' in order for the app to be
 // able to create and retrieve asset reports.
-const PLAID_PRODUCTS = (process.env.PLAID_PRODUCTS || 'transactions').split(
-  ',',
-);
+const PLAID_PRODUCTS: Products[] = [Products.Transactions] //(process.env.PLAID_PRODUCTS) ?? [Products.Transactions];
 
 // PLAID_COUNTRY_CODES is a comma-separated list of countries for which users
 // will be able to select institutions from.
-const PLAID_COUNTRY_CODES = (process.env.PLAID_COUNTRY_CODES || 'US').split(
+const PLAID_COUNTRY_CODES: CountryCode[] = [CountryCode.Us];/*(process.env.PLAID_COUNTRY_CODES || CountryCode.Us).split(
   ',',
-);
+) ?? [CountryCode.Us];*/
 
 // Parameters used for the OAuth redirect Link flow.
 //
@@ -39,13 +50,13 @@ const PLAID_ANDROID_PACKAGE_NAME = process.env.PLAID_ANDROID_PACKAGE_NAME || '';
 
 // We store the access_token in memory - in production, store it in a secure
 // persistent data store
-let ACCESS_TOKEN = null;
-let PUBLIC_TOKEN = null;
-let ITEM_ID = null;
+let ACCESS_TOKEN = '';
+let PUBLIC_TOKEN = '';
+let ITEM_ID = '';
 // The payment_id is only relevant for the UK Payment Initiation product.
 // We store the payment_id in memory - in production, store it in a secure
 // persistent data store
-let PAYMENT_ID = null;
+let PAYMENT_ID = '';
 
 // Initialize the Plaid client
 // Find your API keys in the Dashboard (https://dashboard.plaid.com/account/keys)
@@ -82,12 +93,12 @@ app.post('/api/info', function (request, response, next) {
 // Create a link token with configs which we can then use to initialize Plaid Link client-side.
 // See https://plaid.com/docs/#create-link-token
 app.post('/api/create_link_token', async function (request, response) {
-  const configs = {
+  const configs: LinkTokenCreateRequest = {
     user: {
       // This should correspond to a unique id for the current user.
       client_user_id: 'user-id',
     },
-    client_name: 'Plaid Quickstart',
+    client_name: 'Credit Card Finder',
     products: PLAID_PRODUCTS,
     country_codes: PLAID_COUNTRY_CODES,
     language: 'en',
@@ -104,9 +115,10 @@ app.post('/api/create_link_token', async function (request, response) {
     const createTokenResponse = await client.linkTokenCreate(configs);
     prettyPrintResponse(createTokenResponse);
     response.json(createTokenResponse.data);
-  } catch (error) {
-    prettyPrintResponse(error.response);
-    return response.json(formatError(error.response));
+  } catch (e) {
+    const error: Error = (e as unknown) as Error;
+    prettyPrintResponse(error.message);
+    return response.json(formatError(error.message));
   }
 });
 
@@ -137,13 +149,13 @@ app.post(
           reference: 'paymentRef',
           amount: {
             value: 12.34,
-            currency: 'GBP',
+            currency: PaymentAmountCurrencyEnum.Gbp,
           },
         },
       );
       prettyPrintResponse(createPaymentResponse);
       const paymentId = createPaymentResponse.data.payment_id;
-      PAYMENT_ID = paymentId;
+      
       const configs = {
         user: {
           // This should correspond to a unique id for the current user.
@@ -157,15 +169,17 @@ app.post(
           payment_id: paymentId,
         },
       };
-      if (PLAID_REDIRECT_URI !== '') {
-        configs.redirect_uri = PLAID_REDIRECT_URI;
-      }
+      // Don't think that this route needs a redirect_uri from reading the docs
+      // if (PLAID_REDIRECT_URI !== '') {
+      //   configs.redirect_uri = PLAID_REDIRECT_URI;
+      // }
       const createTokenResponse = await client.linkTokenCreate(configs);
       prettyPrintResponse(createTokenResponse);
       response.json(createTokenResponse.data);
-    } catch (error) {
-      prettyPrintResponse(error.response);
-      return response.json(formatError(error.response));
+    } catch (e) {
+      const error: Error = (e as unknown) as Error;
+      prettyPrintResponse(error.message);
+      return response.json(formatError(error.message));
     }
   },
 );
@@ -174,22 +188,22 @@ app.post(
 // an API access_token
 // https://plaid.com/docs/#exchange-token-flow
 app.post('/api/set_access_token', async function (request, response, next) {
-  PUBLIC_TOKEN = request.body.public_token;
+  const publicToken = request.body.public_token;
   try {
     const tokenResponse = await client.itemPublicTokenExchange({
-      public_token: PUBLIC_TOKEN,
+      public_token: publicToken,
     });
     prettyPrintResponse(tokenResponse);
     ACCESS_TOKEN = tokenResponse.data.access_token;
-    ITEM_ID = tokenResponse.data.item_id;
+    const itemId = tokenResponse.data.item_id;
     response.json({
       access_token: ACCESS_TOKEN,
-      item_id: ITEM_ID,
-      error: null,
+      item_id: itemId,
     });
-  } catch (error) {
-    prettyPrintResponse(error.response);
-    return response.json(formatError(error.response));
+  } catch (e) {
+    const error: Error = (e as unknown) as Error;
+    prettyPrintResponse(error.message);
+    return response.json(formatError(error.message));
   }
 });
 
@@ -200,9 +214,10 @@ app.get('/api/auth', async function (request, response, next) {
     const authResponse = await client.authGet({ access_token: ACCESS_TOKEN });
     prettyPrintResponse(authResponse);
     response.json(authResponse.data);
-  } catch (error) {
-    prettyPrintResponse(error.response);
-    return response.json(formatError(error.response));
+  } catch (e) {
+    const error: Error = (e as unknown) as Error;
+    prettyPrintResponse(error.message);
+    return response.json(formatError(error.message));
   }
 });
 
@@ -225,9 +240,10 @@ app.get('/api/transactions', async function (request, response, next) {
     const transactionsResponse = await client.transactionsGet(configs);
     prettyPrintResponse(transactionsResponse);
     response.json(transactionsResponse.data);
-  } catch (error) {
-    prettyPrintResponse(error.response);
-    return response.json(formatError(error.response));
+  } catch (e) {
+    const error: Error = (e as unknown) as Error;
+    prettyPrintResponse(error.message);
+    return response.json(formatError(error.message));
   }
 });
 
@@ -244,7 +260,7 @@ app.get(
       end_date: endDate,
     };
     try {
-      const investmentTransactionsResponse = await client.investmentTransactionsGet(
+      const investmentTransactionsResponse = await client.investmentsTransactionsGet(
         configs,
       );
       prettyPrintResponse(investmentTransactionsResponse);
@@ -252,9 +268,10 @@ app.get(
         error: null,
         investment_transactions: investmentTransactionsResponse.data,
       });
-    } catch (error) {
-      prettyPrintResponse(error.response);
-      return response.json(formatError(error.response));
+    } catch (e) {
+      const error: Error = (e as unknown) as Error;
+      prettyPrintResponse(error.message);
+      return response.json(formatError(error.message));
     }
   },
 );
@@ -268,9 +285,10 @@ app.get('/api/identity', async function (request, response, next) {
     });
     prettyPrintResponse(identityResponse);
     response.json({ identity: identityResponse.data.accounts });
-  } catch (error) {
-    prettyPrintResponse(error.response);
-    return response.json(formatError(error.response));
+  } catch (e) {
+    const error: Error = (e as unknown) as Error;
+    prettyPrintResponse(error.message);
+    return response.json(formatError(error.message));
   }
 });
 
@@ -283,9 +301,10 @@ app.get('/api/balance', async function (request, response, next) {
     });
     prettyPrintResponse(balanceResponse);
     response.json(balanceResponse.data);
-  } catch (error) {
-    prettyPrintResponse(error.response);
-    return response.json(formatError(error.response));
+  } catch (e) {
+    const error: Error = (e as unknown) as Error;
+    prettyPrintResponse(error.message);
+    return response.json(formatError(error.message));
   }
 });
 
@@ -298,9 +317,10 @@ app.get('/api/holdings', async function (request, response, next) {
     });
     prettyPrintResponse(holdingsResponse);
     response.json({ error: null, holdings: holdingsResponse.data });
-  } catch (error) {
-    prettyPrintResponse(error.response);
-    return response.json(formatError(error.response));
+  } catch (e) {
+    const error: Error = (e as unknown) as Error;
+    prettyPrintResponse(error.message);
+    return response.json(formatError(error.message));
   }
 });
 
@@ -312,9 +332,9 @@ app.get('/api/item', async function (request, response, next) {
     // billed products, webhook information, and more.
     const itemResponse = await client.itemGet({ access_token: ACCESS_TOKEN });
     // Also pull information about the institution
-    const configs = {
-      institution_id: itemResponse.data.item.institution_id,
-      country_codes: ['US'],
+    const configs: InstitutionsGetByIdRequest = {
+      institution_id: itemResponse.data.item.institution_id ?? '',
+      country_codes: [CountryCode.Us],
     };
     const instResponse = await client.institutionsGetById(configs);
     prettyPrintResponse(itemResponse);
@@ -322,24 +342,26 @@ app.get('/api/item', async function (request, response, next) {
       item: itemResponse.data.item,
       institution: instResponse.data.institution,
     });
-  } catch (error) {
-    prettyPrintResponse(error.response);
-    return response.json(formatError(error.response));
+  } catch (e) {
+    const error: Error = (e as unknown) as Error;
+    prettyPrintResponse(error.message);
+    return response.json(formatError(error.message));
   }
 });
 
 // Retrieve an Item's accounts
 // https://plaid.com/docs/#accounts
-app.get('/api/accounts', async function (request, response, next) {
+app.get('/api/accounts', async function (_request, response, _next) {
   try {
     const accountsResponse = await client.accountsGet({
       access_token: ACCESS_TOKEN,
     });
     prettyPrintResponse(accountsResponse);
     response.json(accountsResponse.data);
-  } catch (error) {
-    prettyPrintResponse(error.response);
-    return response.json(formatError(error.response));
+  } catch (e) {
+    const error: Error = (e as unknown) as Error;
+    prettyPrintResponse(error.message);
+    return response.json(formatError(error.message));
   }
 });
 
@@ -391,12 +413,13 @@ app.get('/api/assets', async function (request, response, next) {
     prettyPrintResponse(getResponse);
     prettyPrintResponse(pdfResponse);
     response.json({
-      json: getResponse.data.report,
+      json: (getResponse as AxiosResponse<AssetReportGetResponse>).data.report,
       pdf: pdfResponse.data.toString('base64'),
     });
-  } catch {
-    prettyPrintResponse(error.response);
-    return response.json(formatError(error.response));
+  } catch (e) {
+    const error: Error = (e as unknown) as Error;
+    prettyPrintResponse(error.message);
+    return response.json(formatError(error.message));
   }
 });
 
@@ -409,9 +432,10 @@ app.get('/api/payment', async function (request, response, next) {
     });
     prettyPrintResponse(paymentGetResponse);
     response.json({ error: null, payment: paymentGetResponse.data });
-  } catch (error) {
-    prettyPrintResponse(error.response);
-    return response.json(formatError(error.response));
+  } catch (e) {
+    const error: Error = (e as unknown) as Error;
+    prettyPrintResponse(error.message);
+    return response.json(formatError(error.message));
   }
 });
 
@@ -429,8 +453,8 @@ const prettyPrintResponse = (response) => {
 // notified when the Asset Report is finished being generated.
 
 const getAssetReportWithRetries = (
-  plaidClient,
-  asset_report_token,
+  plaidClient: PlaidApi,
+  asset_report_token: string,
   ms = 1000,
   retriesLeft = 20,
 ) =>
@@ -441,7 +465,7 @@ const getAssetReportWithRetries = (
 
     plaidClient
       .assetReportGet(request)
-      .then((response) => {
+      .then((response: AxiosResponse<AssetReportGetResponse>) => {
         return resolve(response);
       })
       .catch(() => {
@@ -476,4 +500,4 @@ app.get('/login', (req, res) => {
 });
 
 
-// app.listen(3000);  // PORT
+// app.listen(8080);  // PORT
