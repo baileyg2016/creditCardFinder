@@ -31,9 +31,7 @@ const PLAID_PRODUCTS: Products[] = [Products.Transactions] //(process.env.PLAID_
 
 // PLAID_COUNTRY_CODES is a comma-separated list of countries for which users
 // will be able to select institutions from.
-const PLAID_COUNTRY_CODES: CountryCode[] = [CountryCode.Us];/*(process.env.PLAID_COUNTRY_CODES || CountryCode.Us).split(
-  ',',
-) ?? [CountryCode.Us];*/
+const PLAID_COUNTRY_CODES: CountryCode[] = [CountryCode.Us];
 
 // Parameters used for the OAuth redirect Link flow.
 //
@@ -169,10 +167,7 @@ app.post(
           payment_id: paymentId,
         },
       };
-      // Don't think that this route needs a redirect_uri from reading the docs
-      // if (PLAID_REDIRECT_URI !== '') {
-      //   configs.redirect_uri = PLAID_REDIRECT_URI;
-      // }
+
       const createTokenResponse = await client.linkTokenCreate(configs);
       prettyPrintResponse(createTokenResponse);
       response.json(createTokenResponse.data);
@@ -188,14 +183,14 @@ app.post(
 // an API access_token
 // https://plaid.com/docs/#exchange-token-flow
 app.post('/api/set_access_token', async function (request, response, next) {
-  const publicToken = request.body.public_token;
+  const publicToken: string = request.body.public_token;
   try {
     const tokenResponse = await client.itemPublicTokenExchange({
       public_token: publicToken,
     });
     prettyPrintResponse(tokenResponse);
     ACCESS_TOKEN = tokenResponse.data.access_token;
-    const itemId = tokenResponse.data.item_id;
+    const itemId: string = tokenResponse.data.item_id;
     response.json({
       access_token: ACCESS_TOKEN,
       item_id: itemId,
