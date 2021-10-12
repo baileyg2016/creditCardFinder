@@ -38,6 +38,7 @@ interface TransactionsDataItem {
   amount: string;
   date: string;
   name: string;
+  category: Array<string> | null;
 }
 
 interface IdentityDataItem {
@@ -143,6 +144,10 @@ export const transactionsCategories: Array<Categories> = [
     title: "Date",
     field: "date",
   },
+  {
+    title: "Category",
+    field: "category",
+  }
 ];
 
 export const identityCategories: Array<Categories> = [
@@ -326,6 +331,7 @@ export const transformTransactionsData = (
       name: t.name!,
       amount: formatCurrency(t.amount!, t.iso_currency_code),
       date: t.date,
+      category : t.category
     };
     return item;
   });
