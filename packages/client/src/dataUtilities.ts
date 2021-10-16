@@ -34,10 +34,17 @@ interface AuthDataItem {
   balance: string;
   name: string;
 }
+
 interface TransactionsDataItem {
   amount: string;
   date: string;
   name: string;
+  category: Array<string> | null;
+}
+
+interface CategoryAmountDataItem {
+  category : string;
+  amount : string;
 }
 
 interface IdentityDataItem {
@@ -62,7 +69,7 @@ interface InvestmentsDataItem {
   name: string;
 }
 
-interface LiabilitiessDataItem {
+interface LiabilitiesDataItem {
   amount: string;
   date: string;
   name: string;
@@ -104,10 +111,11 @@ export type DataItem =
   | IdentityDataItem
   | BalanceDataItem
   | InvestmentsDataItem
-  | LiabilitiessDataItem
+  | LiabilitiesDataItem
   | ItemDataItem
   | PaymentDataItem
-  | AssetsDataItem;
+  | AssetsDataItem
+  | CategoryAmountDataItem;
 
 export type Data = Array<DataItem>;
 
@@ -143,7 +151,22 @@ export const transactionsCategories: Array<Categories> = [
     title: "Date",
     field: "date",
   },
+  {
+    title: "Category",
+    field: "category",
+  }
 ];
+
+export const CategoryAmountCategories: Array<Categories> = [
+  {
+    title: "Category",
+    field: "category",
+  },
+  {
+    title: "Amount",
+    field: "amount",
+  }
+]
 
 export const identityCategories: Array<Categories> = [
   {
@@ -326,6 +349,7 @@ export const transformTransactionsData = (
       name: t.name!,
       amount: formatCurrency(t.amount!, t.iso_currency_code),
       date: t.date,
+      category : t.category
     };
     return item;
   });
