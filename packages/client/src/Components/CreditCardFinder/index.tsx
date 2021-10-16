@@ -3,10 +3,12 @@ import React, { useContext, useEffect, useState } from "react";
 import Context from "../../Context";
 import styles from "./index.module.scss";
 import {
+    CategoryAmountCategories,
     Data,
     DataItem,
     transformTransactionsData,
 } from "../../dataUtilities";
+import Table from "../Table";
 
 const CreditCardFinder = () => {
     const {
@@ -15,7 +17,6 @@ const CreditCardFinder = () => {
     } = useContext(Context);
 
     const [transformedData, setTransformedData] = useState<Data>([]);
-
     const getData = async () => {
         const response = await fetch(`/api/transactions`, { method: "GET" });
         const data = await response.json();
@@ -33,15 +34,11 @@ const CreditCardFinder = () => {
 
     let amounts_by_category : Map<string, number> = new Map();
 
-    transformedData.forEach((dataItem : DataItem | any) => {
-        let amounts_by_category : Map<string, number> = new Map();
-        // Categories Key
+    transformedData.forEach((dataItem : DataItem | any) => { 
         const categories : Array<string> = dataItem["category"];
-        // Amount Value
         const amountString = dataItem["amount"];
         
         let amount : number = +(amountString.replace("USD", ""));
-        console.log(amount)
         if (categories == null) {
             return; 
         }
@@ -51,32 +48,31 @@ const CreditCardFinder = () => {
                 amounts_by_category.set(category, amount);
             });
         }
-        return amounts_by_category;
     }); 
     
 
     const rows = Array.from(amounts_by_category).map((dataItem: [string, number]) => {
-        return (
-            <h3 key={dataItem[0]} className={styles.dataField}>
-                {dataItem[0] + " " + dataItem[1]}
-            </h3>
-        )
+        return {
+            category: dataItem[0],
+            amount: dataItem[1]
+        }
     })
 
     return (    
         <>
-            <h3 className={styles.title}>Find the Credit card for you please</h3>
+            <h3 className={styles.title}>Find the Credit card for you!</h3>
             <div className='CreditCardFinder'>
             <>
-                {rows}
+                <Table
+                categories={CategoryAmountCategories}
+                data={rows}
+                isIdentity={false}
+                />
             </>
             </div>  
         </>
     )
 };
-
-
-
 
 CreditCardFinder.displayName = "Credit Card Finder";
 
