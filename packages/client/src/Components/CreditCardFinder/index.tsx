@@ -39,23 +39,23 @@ const CreditCardFinder = () => {
         const amountString = dataItem["amount"];
         
         let amount : number = +(amountString.replace("USD", ""));
-        if (categories == null) {
+        if (categories === null || categories.length === 0) {
             return; 
         }
         else {
-            categories.forEach((category : string) => {
-                amount = amounts_by_category.has(category) ? amounts_by_category.get(category) as number + amount : amount;
-                amounts_by_category.set(category, amount);
-            });
+            const category = categories[0];
+            amount = amounts_by_category.has(category) ? amounts_by_category.get(category) as number + amount : amount;
+            amounts_by_category.set(category, amount);
         }
     }); 
     
 
-    const rows = Array.from(amounts_by_category).map((dataItem: [string, number]) => {
-        return {
-            category: dataItem[0],
-            amount: dataItem[1]
-        }
+    const creditCard : Array<DataItem> = Array.from(amounts_by_category).map((dataItem: [string, number]) => {
+        const item: DataItem = {
+            category : dataItem[0],
+            amount: dataItem[1].toString()
+          };
+          return item; 
     })
 
     return (    
@@ -65,9 +65,8 @@ const CreditCardFinder = () => {
             <>
                 <Table
                 categories={CategoryAmountCategories}
-                data={rows}
-                isIdentity={false}
-                />
+                data={creditCard}
+                isIdentity={false}/>
             </>
             </div>  
         </>
