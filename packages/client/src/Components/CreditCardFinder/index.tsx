@@ -17,6 +17,7 @@ const CreditCardFinder = () => {
     } = useContext(Context);
 
     const [transformedData, setTransformedData] = useState<Data>([]);
+
     const getData = async () => {
         const response = await fetch(`/api/transactions`, { method: "GET" });
         const data = await response.json();
@@ -34,8 +35,11 @@ const CreditCardFinder = () => {
 
     let amounts_by_category : Map<string, number> = new Map();
 
-    transformedData.forEach((dataItem : DataItem | any) => { 
+    transformedData.forEach((dataItem : DataItem | any) => {
+        let amounts_by_category : Map<string, number> = new Map();
+        // Categories Key
         const categories : Array<string> = dataItem["category"];
+        // Amount Value
         const amountString = dataItem["amount"];
         
         let amount : number = +(amountString.replace("USD", ""));
@@ -47,6 +51,7 @@ const CreditCardFinder = () => {
             amount = amounts_by_category.has(category) ? amounts_by_category.get(category) as number + amount : amount;
             amounts_by_category.set(category, amount);
         }
+        return amounts_by_category;
     }); 
     
 
@@ -60,7 +65,7 @@ const CreditCardFinder = () => {
 
     return (    
         <>
-            <h3 className={styles.title}>Find the Credit card for you!</h3>
+            <h3 className={styles.title}>Find the Credit card for you please</h3>
             <div className='CreditCardFinder'>
             <>
                 <Table
@@ -72,6 +77,9 @@ const CreditCardFinder = () => {
         </>
     )
 };
+
+
+
 
 CreditCardFinder.displayName = "Credit Card Finder";
 
