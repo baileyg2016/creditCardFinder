@@ -21,6 +21,7 @@
 }
 
 .dataRows {
+  font-weight: 900;
   height: 6 * $unit;
   &:first-child {
     td {
@@ -33,6 +34,9 @@
 }
 
 .dataField {
+  border: 1px solid black;
+  border-width: 0.1px;
+  width: 200px;
   text-align: left;
   overflow-wrap: break-word;
   border-top: 1px solid $black200;

@@ -3,6 +3,7 @@ import { usePlaidLink } from "react-plaid-link";
 import Button from "plaid-threads/Button";
 
 import Context from "../../Context";
+import styles from "./index.module.scss";
 
 const Link = () => {
   const { linkToken, dispatch } = useContext(Context);
@@ -68,9 +69,15 @@ const Link = () => {
   }, [ready, open, isOauth]);
 
   return (
-    <Button type="button" large onClick={() => open()} disabled={!ready}>
-      Login
-    </Button>
+    <div className={styles.container}>
+      <div className={styles.button}>
+        <Button type="button" large onClick={() => open()} disabled={!ready}>
+          Login
+        </Button>
+      </div>
+      
+    </div>
+    
   );
 };
 
