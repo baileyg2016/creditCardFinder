@@ -62,41 +62,7 @@ const Header = () => {
         </>
       ) : (
         <>
-          {isItemAccess ? (
-            <h4 className={styles.subtitle}>
-              Congrats! By linking an account, you have created an{" "}
-              <InlineLink
-                href="http://plaid.com/docs/quickstart/glossary/#item"
-                target="_blank"
-              >
-                Item
-              </InlineLink>
-              .
-            </h4>
-          ) : (
-            <h4 className={styles.subtitle}>
-              <Callout warning>
-                Unable to create an item. Please check your backend server
-              </Callout>
-            </h4>
-          )}
-          <div className={styles.itemAccessContainer}>
-            <p className={styles.itemAccessRow}>
-              <span className={styles.idName}>item_id</span>
-              <span className={styles.tokenText}>{itemId}</span>
-            </p>
-
-            <p className={styles.itemAccessRow}>
-              <span className={styles.idName}>access_token</span>
-              <span className={styles.tokenText}>{accessToken}</span>
-            </p>
-          </div>
-          {isItemAccess && (
-            <p className={styles.requests}>
-              Now that you have an access_token, you can make all of the
-              following requests:
-            </p>
-          )}
+          {}
         </>
       )}
     </div>

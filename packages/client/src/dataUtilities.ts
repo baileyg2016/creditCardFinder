@@ -45,7 +45,17 @@ interface TransactionsDataItem {
 interface CategoryAmountDataItem {
   category : string;
   amount : string;
+  link : any;
 }
+
+interface CreditCardDataItem {
+  name: string;
+  bank: string;
+  points: string;
+  cashback: string;
+  link: any;
+}
+
 
 interface IdentityDataItem {
   addresses: string;
@@ -115,7 +125,8 @@ export type DataItem =
   | ItemDataItem
   | PaymentDataItem
   | AssetsDataItem
-  | CategoryAmountDataItem;
+  | CategoryAmountDataItem
+  | CreditCardDataItem;
 
 export type Data = Array<DataItem>;
 
@@ -165,6 +176,33 @@ export const CategoryAmountCategories: Array<Categories> = [
   {
     title: "Amount",
     field: "amount",
+  },
+  {
+    title: "Link",
+    field: "link",
+  }
+]
+
+export const CreditCardCategories: Array<Categories> = [
+  {
+    title: "Name",
+    field: "name",
+  },
+  {
+    title: "Bank",
+    field: "bank"
+  },
+  {
+    title: "Points",
+    field: "points",
+  },
+  {
+    title: "Cashback",
+    field: "cashback",
+  },
+  {
+    title: "Link",
+    field: "link",
   }
 ]
 

@@ -1,1 +1,25 @@
 @import "~plaid-threads/scss/variables";
+
+.sendRequest {
+    margin: 2 * $unit 2 * $unit $unit 3 * $unit;
+    width: 70%;
+}
+
+
+.getCard {
+  background-color: black;
+  border: 1px;
+  border-radius: 5px;
+  color: white;
+  padding: 25px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  
+
+  margin: 0;
+  top: 50%;
+  -ms-transform: translateY(-75%);
+  transform: translate(5%, -15%);
+}
