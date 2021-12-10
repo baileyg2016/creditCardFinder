@@ -1,8 +1,8 @@
 import React, { useEffect, useContext, useCallback } from "react";
 
-import Header from "./Components/Headers";
-import CreditCardFinder from "./Components/CreditCardFinder";
-import Context from "./Context";
+import Header from "./components/headers/Headers";
+import CreditCardFinder from "./components/credit-card-finder/CreditCardFinder";
+import Context from "./context/Context";
 
 import styles from "./App.module.scss";
 

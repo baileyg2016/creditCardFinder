@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import { QuickstartProvider } from "./Context";
+import { QuickstartProvider } from "./context/Context";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
