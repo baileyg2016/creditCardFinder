@@ -2,24 +2,24 @@ import React from "react";
 
 import { DataItem, Categories } from "../../dataUtilities";
 
-import styles from "./Identity.module.scss";
+import "./Identity.styles.scss";
 
 interface Props {
   data: Array<DataItem>;
   categories: Array<Categories>;
 }
 
-const Identity = (props: Props) => {
+export const Identity = (props: Props) => {
   const identityHeaders = props.categories.map((category, index) => (
-    <span key={index} className={styles.identityHeader}>
+    <span key={index} className='identityHeader'>
       {category.title}
     </span>
   ));
 
   const identityRows = props.data.map((item: DataItem | any, index) => (
-    <div key={index} className={styles.identityDataRow}>
+    <div key={index} className='identityDataRow'>
       {props.categories.map((category: Categories, index) => (
-        <span key={index} className={styles.identityDataField}>
+        <span key={index} className='identityDataField'>
           {item[category.field]}
         </span>
       ))}
@@ -27,13 +27,9 @@ const Identity = (props: Props) => {
   ));
 
   return (
-    <div className={styles.identityTable}>
-      <div className={styles.identityHeadersRow}>{identityHeaders}</div>
-      <div className={styles.identityDataBody}>{identityRows}</div>
+    <div className='identityTable'>
+      <div className='identityHeadersRow'>{identityHeaders}</div>
+      <div className='identityDataBody'>{identityRows}</div>
     </div>
   );
 };
-
-Identity.displayName = "Identity";
-
-export default Identity;

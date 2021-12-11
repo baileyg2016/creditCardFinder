@@ -1,16 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 
 import Context from "../../context/Context";
-import styles from "./index.module.scss";
+import "./CreditCardFinder.scss";
 import {
     CategoryAmountCategories,
     Data,
     DataItem,
     transformTransactionsData,
 } from "../../dataUtilities";
-import Table from "../table/Table";
+import { Table } from "../table/Table";
 
-const CreditCardFinder = () => {
+export const CreditCardFinder = () => {
     const {
         itemId,
         backend,
@@ -65,7 +65,7 @@ const CreditCardFinder = () => {
 
     return (    
         <>
-            <h3 className={styles.title}>Find the Credit card for you please</h3>
+            <h3 className='title'>Find the Credit card for you please</h3>
             <div className='CreditCardFinder'>
             <>
                 <Table
@@ -77,10 +77,3 @@ const CreditCardFinder = () => {
         </>
     )
 };
-
-
-
-
-CreditCardFinder.displayName = "Credit Card Finder";
-
-export default CreditCardFinder

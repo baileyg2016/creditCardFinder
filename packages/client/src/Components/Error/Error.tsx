@@ -4,7 +4,7 @@ import Note from "plaid-threads/Note";
 
 import { ErrorDataItem } from "../../dataUtilities";
 
-import styles from "./index.module.scss";
+import "./Error.scss";
 
 interface Props {
   error: ErrorDataItem;
@@ -26,7 +26,7 @@ const errorPaths: { [key: string]: string } = {
   SANDBOX_ERROR: "sandbox",
 };
 
-const Error = (props: Props) => {
+export const Error = (props: Props) => {
   const [path, setPath] = useState("");
 
   useEffect(() => {
@@ -40,28 +40,28 @@ const Error = (props: Props) => {
 
   return (
     <>
-      <div className={styles.errorTop}></div>
-      <div className={styles.errorContainer}>
-        <Note error className={styles.code}>
+      <div className='errorTop'></div>
+      <div className='errorContainer'>
+        <Note error className='code'>
           {props.error.status_code ? props.error.status_code : "error"}
         </Note>
-        <div className={styles.errorContents}>
-          <div className={styles.errorItem}>
-            <span className={styles.errorTitle}>Error code: </span>
-            <span className={styles.errorData}>
-              <div className={styles.errorCode}>
+        <div className='errorContents'>
+          <div className='errorItem'>
+            <span className='errorTitle'>Error code: </span>
+            <span className='errorData'>
+              <div className='errorCode'>
                 {props.error.error_code}
-                <div className={styles.pinkBox}></div>
+                <div className='pinkBox'></div>
               </div>
             </span>
           </div>
-          <div className={styles.errorItem}>
-            <span className={styles.errorTitle}>Type: </span>
-            <span className={styles.errorData}>{props.error.error_type}</span>
+          <div className='errorItem'>
+            <span className='errorTitle'>Type: </span>
+            <span className='errorData'>{props.error.error_type}</span>
           </div>
-          <div className={styles.errorItem}>
-            <span className={styles.errorTitle}>Message: </span>
-            <span className={styles.errorMessage}>
+          <div className='errorItem'>
+            <span className='errorTitle'>Message: </span>
+            <span className='errorMessage'>
               {props.error.display_message == null
                 ? props.error.error_message
                 : props.error.display_message}
@@ -71,7 +71,7 @@ const Error = (props: Props) => {
         <Button
           small
           wide
-          className={styles.learnMore}
+          className='learnMore'
           target="_blank"
           href={path}
         >
@@ -81,7 +81,3 @@ const Error = (props: Props) => {
     </>
   );
 };
-
-Error.displayName = "Error";
-
-export default Error;

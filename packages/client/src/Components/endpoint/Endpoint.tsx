@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import Button from "plaid-threads/Button";
 import Note from "plaid-threads/Note";
 
-import Table from "../table/Table";
-import Error from "../error/Error";
+import { Table } from "../table/Table";
+import { Error } from "../error/Error";
 import { DataItem, Categories, ErrorDataItem, Data } from "../../dataUtilities";
 
-import styles from "./index.module.scss";
+import "./Endpoint.scss";
 
 interface Props {
   endpoint: string;
@@ -17,7 +17,7 @@ interface Props {
   transformData: (arg: any) => Array<DataItem>;
 }
 
-const Endpoint = (props: Props) => {
+export const Endpoint = (props: Props) => {
   const [showTable, setShowTable] = useState(false);
   const [transformedData, setTransformedData] = useState<Data>([]);
   const [pdf, setPdf] = useState<string | null>(null);
@@ -43,26 +43,26 @@ const Endpoint = (props: Props) => {
 
   return (
     <>
-      <div className={styles.endpointContainer}>
-        <Note info className={styles.post}>
+      <div className='endpointContainer'>
+        <Note info className='post'>
           POST
         </Note>
-        <div className={styles.endpointContents}>
-          <div className={styles.endpointHeader}>
+        <div className='endpointContents'>
+          <div className='endpointHeader'>
             {props.name != null && (
-              <span className={styles.endpointName}>{props.name}</span>
+              <span className='endpointName'>{props.name}</span>
             )}
-            <span className={styles.schema}>{props.schema}</span>
+            <span className='schema'>{props.schema}</span>
           </div>
-          <div className={styles.endpointDescription}>{props.description}</div>
+          <div className='endpointDescription'>{props.description}</div>
         </div>
-        <div className={styles.buttonsContainer}>
+        <div className='buttonsContainer'>
           <Button
             small
             centered
             wide
             secondary
-            className={styles.sendRequest}
+            className='sendRequest'
             onClick={getData}
           >
             {isLoading ? "Loading..." : `Send request`}
@@ -72,7 +72,7 @@ const Endpoint = (props: Props) => {
               small
               centered
               wide
-              className={styles.pdf}
+              className='pdf'
               href={`data:application/pdf;base64,${pdf}`}
               componentProps={{ download: "Asset Report.pdf" }}
             >
@@ -92,7 +92,3 @@ const Endpoint = (props: Props) => {
     </>
   );
 };
-
-Endpoint.displayName = "Endpoint";
-
-export default Endpoint;

@@ -1,9 +1,9 @@
 import React from "react";
 
 import { DataItem, Categories } from "../../dataUtilities";
-import Identity from "./Identity";
+import { Identity } from "../identity/Identity";
 
-import styles from "./index.module.scss";
+import "./Table.scss";
 
 interface Props {
   data: Array<DataItem>;
@@ -11,20 +11,20 @@ interface Props {
   isIdentity: boolean;
 }
 
-const Table = (props: Props) => {
+export const Table = (props: Props) => {
   const maxRows = 15;
   // regular table
   const headers = props.categories.map((category, index) => (
-    <th key={index} className={styles.headerField}>
+    <th key={index} className='headerField'>
       {category.title}
     </th>
   ));
 
   const rows = props.data
     .map((item: DataItem | any, index) => (
-      <tr key={index} className={styles.dataRows}>
+      <tr key={index} className='dataRows'>
         {props.categories.map((category: Categories, index) => (
-          <td key={index} className={styles.dataField}>
+          <td key={index} className='dataField'>
             {item[category.field]}
           </td>
         ))}
@@ -35,15 +35,11 @@ const Table = (props: Props) => {
   return props.isIdentity ? (
     <Identity data={props.data} categories={props.categories} />
   ) : (
-    <table className={styles.dataTable}>
-      <thead className={styles.header}>
-        <tr className={styles.headerRow}>{headers}</tr>
+    <table className='dataTable'>
+      <thead className='header'>
+        <tr className='headerRow'>{headers}</tr>
       </thead>
-      <tbody className={styles.body}>{rows}</tbody>
+      <tbody className='body'>{rows}</tbody>
     </table>
   );
 };
-
-Table.displayName = "Table";
-
-export default Table;

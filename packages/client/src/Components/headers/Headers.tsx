@@ -3,12 +3,12 @@ import Callout from "plaid-threads/Callout";
 import Button from "plaid-threads/Button";
 import InlineLink from "plaid-threads/InlineLink";
 
-import Link from "../link/Link";
+import { Link } from "../link/Link";
 import Context from "../../context/Context";
 
-import styles from "./index.module.scss";
+import "./Headers.scss";
 
-const Header = () => {
+export const Header = () => {
   const {
     itemId,
     accessToken,
@@ -20,8 +20,8 @@ const Header = () => {
   } = useContext(Context);
 
   return (
-    <div className={styles.grid}>
-      <h3 className={styles.title}>Credit Card Finder</h3>
+    <div className='grid'>
+      <h3 className='title'>Credit Card Finder</h3>
 
       {!linkSuccess ? (
         <>
@@ -49,13 +49,13 @@ const Header = () => {
               <div>Error Message: {linkTokenError.error_message}</div>
             </Callout>
           ) : linkToken === "" ? (
-            <div className={styles.linkButton}>
+            <div className='linkButton'>
               <Button large disabled>
                 Loading...
               </Button>
             </div>
           ) : (
-            <div className={styles.linkButton}>
+            <div className='linkButton'>
               <Link />
             </div>
           )}
@@ -63,7 +63,7 @@ const Header = () => {
       ) : (
         <>
           {isItemAccess ? (
-            <h4 className={styles.subtitle}>
+            <h4 className='subtitle'>
               Congrats! By linking an account, you have created an{" "}
               <InlineLink
                 href="http://plaid.com/docs/quickstart/glossary/#item"
@@ -74,25 +74,25 @@ const Header = () => {
               .
             </h4>
           ) : (
-            <h4 className={styles.subtitle}>
+            <h4 className='subtitle'>
               <Callout warning>
                 Unable to create an item. Please check your backend server
               </Callout>
             </h4>
           )}
-          <div className={styles.itemAccessContainer}>
-            <p className={styles.itemAccessRow}>
-              <span className={styles.idName}>item_id</span>
-              <span className={styles.tokenText}>{itemId}</span>
+          <div className='itemAccessContainer'>
+            <p className='itemAccessRow'>
+              <span className='idName'>item_id</span>
+              <span className='tokenText'>{itemId}</span>
             </p>
 
-            <p className={styles.itemAccessRow}>
-              <span className={styles.idName}>access_token</span>
-              <span className={styles.tokenText}>{accessToken}</span>
+            <p className='itemAccessRow'>
+              <span className='idName'>access_token</span>
+              <span className='tokenText'>{accessToken}</span>
             </p>
           </div>
           {isItemAccess && (
-            <p className={styles.requests}>
+            <p className='requests'>
               Now that you have an access_token, you can make all of the
               following requests:
             </p>
@@ -102,7 +102,3 @@ const Header = () => {
     </div>
   );
 };
-
-Header.displayName = "Header";
-
-export default Header;

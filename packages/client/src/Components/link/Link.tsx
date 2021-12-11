@@ -4,7 +4,7 @@ import Button from "plaid-threads/Button";
 
 import Context from "../../context/Context";
 
-const Link = () => {
+export const Link = () => {
   const { linkToken, dispatch } = useContext(Context);
 
   const onSuccess = React.useCallback(
@@ -73,7 +73,3 @@ const Link = () => {
     </Button>
   );
 };
-
-Link.displayName = "Link";
-
-export default Link;

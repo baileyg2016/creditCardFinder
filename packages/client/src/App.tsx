@@ -1,10 +1,10 @@
 import React, { useEffect, useContext, useCallback } from "react";
 
-import Header from "./components/headers/Headers";
-import CreditCardFinder from "./components/credit-card-finder/CreditCardFinder";
+import { Header } from "./components/headers/Headers";
+import { CreditCardFinder } from "./components/credit-card-finder/CreditCardFinder";
 import Context from "./context/Context";
 
-import styles from "./App.module.scss";
+import "./App.scss";
 
 const App = () => {
   const { linkSuccess, isItemAccess, dispatch } = useContext(Context);
@@ -79,8 +79,8 @@ const App = () => {
   }, [dispatch, generateToken, getInfo]);
 
   return (
-    <div className={styles.App}>
-      <div className={styles.container}>
+    <div className='App'>
+      <div className='container'>
         <Header />
         {linkSuccess && isItemAccess && (
           <>
