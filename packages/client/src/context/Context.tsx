@@ -61,6 +61,7 @@ export const QuickstartProvider: React.FC<{ children: ReactNode }> = (
         return { ...state };
     }
   };
+
   const [state, dispatch] = useReducer(reducer, initialState);
   return <Provider value={{ ...state, dispatch }}>{props.children}</Provider>;
 };

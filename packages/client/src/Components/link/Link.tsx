@@ -11,7 +11,7 @@ export const Link = () => {
     (public_token: string) => {
       // send public_token to server
       const setToken = async () => {
-        const response = await fetch("/api/set_access_token", {
+        const response = await fetch(`${process.env.API}/api/set_access_token`, {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",

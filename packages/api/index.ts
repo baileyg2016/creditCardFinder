@@ -8,12 +8,12 @@ import {
   PlaidEnvironments,
   PaymentAmountCurrencyEnum,
   InstitutionsGetByIdRequest,
-  AssetReportGetRequest,
   AssetReportGetResponse
 } from "plaid";
 
 // read env vars from .env file
 require('dotenv').config();
+const cors = require('cors');
 const util = require('util');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -71,14 +71,21 @@ const configuration = new Configuration({
 });
 
 const client = new PlaidApi(configuration);
-
 const app = express();
+
 app.use(
   bodyParser.urlencoded({
     extended: false,
   }),
 );
 app.use(bodyParser.json());
+app.use(cors());
+
+app.get('/testing', (request, response, next) => {
+  response.json({
+    'yes': 'you are connected'
+  });
+});
 
 app.post('/api/info', function (request, response, next) {
   response.json({

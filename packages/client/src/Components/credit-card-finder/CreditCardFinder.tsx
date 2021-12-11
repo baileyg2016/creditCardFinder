@@ -19,7 +19,7 @@ export const CreditCardFinder = () => {
     const [transformedData, setTransformedData] = useState<Data>([]);
 
     const getData = async () => {
-        const response = await fetch(`/api/transactions`, { method: "GET" });
+        const response = await fetch(`${process.env.API}/api/transactions`, { method: "GET" });
         const data = await response.json();
         if (data.error != null) {
             return;

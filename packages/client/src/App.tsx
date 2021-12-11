@@ -10,7 +10,7 @@ const App = () => {
   const { linkSuccess, isItemAccess, dispatch } = useContext(Context);
 
   const getInfo = useCallback(async () => {
-    const response = await fetch("/api/info", { method: "POST" });
+    const response = await fetch(`${process.env.API}/api/info`, { method: "POST" });
     if (!response.ok) {
       dispatch({ type: "SET_STATE", state: { backend: false } });
       return { paymentInitiation: false };
@@ -33,7 +33,7 @@ const App = () => {
       const path = paymentInitiation
         ? "/api/create_link_token_for_payment"
         : "/api/create_link_token";
-      const response = await fetch(path, {
+      const response = await fetch(`${process.env.API}${path}`, {
         method: "POST",
       });
       if (!response.ok) {
@@ -62,6 +62,7 @@ const App = () => {
   useEffect(() => {
     const init = async () => {
       const { paymentInitiation } = await getInfo(); // used to determine which path to take when generating token
+      paymentInitiation
       // do not generate a new token for OAuth redirect; instead
       // setLinkToken from localStorage
       if (window.location.href.includes("?oauth_state_id=")) {

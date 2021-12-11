@@ -26,7 +26,7 @@ export const Endpoint = (props: Props) => {
 
   const getData = async () => {
     setIsLoading(true);
-    const response = await fetch(`/api/${props.endpoint}`, { method: "GET" });
+    const response = await fetch(`${process.env.API}/api/${props.endpoint}`, { method: "GET" });
     const data = await response.json();
     if (data.error != null) {
       setError(data.error);
