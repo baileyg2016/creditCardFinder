@@ -3,12 +3,10 @@ import React, { useContext, useEffect, useState } from "react";
 import Context from "../../context/Context";
 import "./CreditCardFinder.scss";
 import {
-    CategoryAmountCategories,
     Data,
     DataItem,
     transformTransactionsData,
 } from "../../dataUtilities";
-import { Table } from "../table/Table";
 
 export const CreditCardFinder = () => {
     const {
