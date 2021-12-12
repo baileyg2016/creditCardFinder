@@ -59,19 +59,6 @@ module.exports = () => {
       open: true,
       hot: true,
       compress: true,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        // "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-        // "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization",
-      },
-      // proxy: {
-      //   '/api': 'http://localhost:8000'
-      // },
-      // onAfterSetupMiddleware: () => {
-      //   openBrowser('http://localhost:3000')
-      // },
-    //   stats: 'errors-only',
-    //   overlay: true,
     }
   }
 };
