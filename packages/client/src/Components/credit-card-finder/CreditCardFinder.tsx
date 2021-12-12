@@ -13,13 +13,18 @@ import { Table } from "../table/Table";
 export const CreditCardFinder = () => {
     const {
         itemId,
+        accessToken,
+        linkToken,
+        linkSuccess,
+        isItemAccess,
         backend,
+        linkTokenError,
     } = useContext(Context);
 
     const [transformedData, setTransformedData] = useState<Data>([]);
 
     const getData = async () => {
-        const response = await fetch(`${process.env.API}/api/transactions`, { method: "GET" });
+        const response = await fetch(`/api/transactions`, { method: "GET" });
         const data = await response.json();
         if (data.error != null) {
             return;
@@ -30,49 +35,72 @@ export const CreditCardFinder = () => {
 
     useEffect(() => {
         getData(); 
-    }, [transformedData, setTransformedData]);
+    }, []);
 
 
     let amounts_by_category : Map<string, number> = new Map();
-
     transformedData.forEach((dataItem : DataItem | any) => {
-        let amounts_by_category : Map<string, number> = new Map();
+
         // Categories Key
-        const categories : Array<string> = dataItem["category"];
+        const category = dataItem["category"][0];
         // Amount Value
+        console.log(dataItem["amount"])
         const amountString = dataItem["amount"];
         
         let amount : number = +(amountString.replace("USD", ""));
-        if (categories === null || categories.length === 0) {
+
+        if (category == null) {
             return; 
         }
         else {
-            const category = categories[0];
-            amount = amounts_by_category.has(category) ? amounts_by_category.get(category) as number + amount : amount;
-            amounts_by_category.set(category, amount);
+            // categories.forEach((category : string) => {
+            //     amount = amounts_by_category.has(category) ? amounts_by_category.get(category) as number + amount : amount;
+            //     amounts_by_category.set(category, amount);
+            // });
+            console.log("\n")
+            console.log(dataItem["name"])
+            console.log(dataItem["category"])
+            console.log(dataItem["amount"])
+            const newAmount = amounts_by_category.has(category) ? amounts_by_category.get(category) as number + amount : amount;
+            amounts_by_category.set(category, newAmount)
         }
         return amounts_by_category;
     }); 
-    
 
-    const creditCard : Array<DataItem> = Array.from(amounts_by_category).map((dataItem: [string, number]) => {
-        const item: DataItem = {
-            category : dataItem[0],
-            amount: dataItem[1].toString()
-          };
-          return item; 
+
+    const categories: Array<string> = [];       
+    const amounts: Array<number> = [];
+    
+    amounts_by_category.forEach((value: number, key: string) => {
+            categories.push(key);
+            amounts.push(value);
+    })
+
+    const rows = categories.map((category: string, index) => {
+        return (
+            <tr key={category} className='dataField'>
+                <td>{category}</td>
+                <td>{amounts[index]}</td>
+            </tr>
+        )
     })
 
     return (    
         <>
             <h3 className='title'>Find the Credit card for you please</h3>
             <div className='CreditCardFinder'>
-            <>
-                <Table
-                categories={CategoryAmountCategories}
-                data={creditCard}
-                isIdentity={false}/>
-            </>
+                <table>
+                    <thead>
+                        <tr>Transaction history</tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Category</td>
+                            <td>Transaction</td>
+                        </tr>
+                        {rows}
+                    </tbody>
+                </table>
             </div>  
         </>
     )

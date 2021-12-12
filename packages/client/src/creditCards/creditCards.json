@@ -1,0 +1,51 @@
+{
+    "cards": [
+        "Capital One Venture": {
+            "points": {
+                "All": 0.02,
+            },
+        },
+        "Chase Sapphire Reserve": {
+            "points": {
+                "Food and Drink": 0.03,
+                "Travel": 0.03,
+                "Everything else": 0.01,
+            },
+            "fee": 550,
+        },
+        "Chase Sapphire Preffered": {
+            "points": {
+                "Food and Drink": 0.03,
+                "Travel": 0.02,
+                "Online Grocery": 0.03,
+                "Streaming": 0.03,
+                "Everything else": 0.01
+            },
+            "fee": 95
+        },
+        "Chase Freedom Unlimited": {
+            "points": {
+                "Food and Drink": 0.03,
+                "Drug stores": 0.03,
+                "Everything else": 0.015
+            },
+            "fee": 0
+        },
+        "Amex Gold": {
+            "points": {
+                "Food and Drink": 0.04,
+                "Groceries": 0.04,
+                "Everything else": 0.01
+            },
+            "fee": 250
+        },
+        "Amex Platinum": {
+            "points": {
+                "Travel": 0.05,
+                "Hotels": 0.05, 
+                "Everything else": 0.01
+            },
+            "fee": 695
+        }
+    ]
+}
