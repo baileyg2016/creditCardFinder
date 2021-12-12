@@ -43,7 +43,7 @@ export const CreditCardFinder = () => {
         const category = dataItem["category"][0];
         // Amount Value
         console.log(dataItem["amount"])
-        const amountString = dataItem["amount"];
+        const amountString = dataItem["amount"] ?? 0;
         
         let amount : number = +(amountString.replace("USD", ""));
 
