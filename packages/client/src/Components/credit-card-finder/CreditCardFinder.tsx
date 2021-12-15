@@ -80,7 +80,8 @@ export const CreditCardFinder = () => {
         const cardPoints = cards.cards.map(({ name, points, fee }, _index) => {
             const total = 0;
 
-            
+            // need to do some brainstorming and change how i am storing the data 
+            // for this part
 
             return {
                 name,
@@ -108,7 +109,9 @@ export const CreditCardFinder = () => {
             <div className='CreditCardFinder'>
                 <table>
                     <thead>
-                        <td>Transaction history</td>
+                        <tr>
+                            <td>Transaction history</td>
+                        </tr>
                     </thead>
                     <tbody>
                         <tr>
