@@ -88,7 +88,15 @@ export const CreditCardFinder = () => {
                     total += points.All * amounts[index]
                 } else if (points.hasOwnProperty(category)) {
                     if (points.hasOwnProperty('Shops')) {
-                        const shopsPoints = points.Shops[category]
+                        console.log('shops')
+                        console.log(points)
+                        console.log(points.Shops)
+                        console.log('Category------', category)
+                        const key = Object.keys(points.Shops)[0]
+
+                        console.log(points.Shops[key])
+                        console.log()
+                        const shopsPoints = points.Shops[key]
                         total += shopsPoints * amounts[index]
                     } else {
                         // need to create a type/interface for category
