@@ -78,18 +78,39 @@ export const CreditCardFinder = () => {
 
     const calculateCards = useCallback(() => {
         const cardPoints = cards.cards.map(({ name, points, fee }, _index) => {
-            const total = 0;
+            let total = 0;
 
             // need to do some brainstorming and change how i am storing the data 
             // for this part
 
+            categories.map((category: string, index: number) => {
+                if (points.All) {
+                    total += points.All * amounts[index]
+                } else if (points.hasOwnProperty(category)) {
+                    if (points.hasOwnProperty('Shops')) {
+                        const shopsPoints = points.Shops[category]
+                        total += shopsPoints * amounts[index]
+                    } else {
+                        // need to create a type/interface for category
+                        // @ts-ignore
+                        total += (points?.[category] as number) * amounts[index]
+                    }
+                } else {
+                    total += (points["Everything else"] as number) * amounts[index]
+                }
+                console.log('points', points[category])
+                console.log(total)
+            });
+
             return {
                 name,
                 points: total,
+                fee
             }
         });
         setTotalPoints(cardPoints);
-    }, []);
+        return cardPoints;
+    }, [amounts, cards, categories]);
 
     useEffect(() => {
         const init = async () => {
@@ -102,6 +123,15 @@ export const CreditCardFinder = () => {
     useEffect(() => {
         getCategories();
     }, [getCategories]);
+
+    useEffect(() => {
+        const calculation = calculateCards();
+        console.log('here is the calculation:');
+        console.log(calculation);
+        console.log(totalPoints)
+    }, [calculateCards]);
+
+
 
     return (    
         <>
