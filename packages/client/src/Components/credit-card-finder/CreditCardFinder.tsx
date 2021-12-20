@@ -9,16 +9,6 @@ import {
 import cards from '../../creditCards/creditCards.json';
 
 export const CreditCardFinder = () => {
-    // const {
-    //     itemId,
-    //     accessToken,
-    //     linkToken,
-    //     linkSuccess,
-    //     isItemAccess,
-    //     backend,
-    //     linkTokenError,
-    // } = useContext(Context);
-
     const [transformedData, setTransformedData] = useState<Data>([]);
     const [categories, setCategories] = useState<Array<string>>([]);
     const [amounts, setAmounts] = useState<Array<number>>([]);
@@ -40,7 +30,6 @@ export const CreditCardFinder = () => {
             // Categories Key
             const category = dataItem["category"][0];
             // Amount Value
-            console.log(dataItem["amount"])
             const amountString = dataItem["amount"] ?? 0;
             
             let amount : number = +(amountString.replace("USD", ""));
@@ -49,14 +38,6 @@ export const CreditCardFinder = () => {
                 return; 
             }
             else {
-                // categories.forEach((category : string) => {
-                //     amount = amounts_by_category.has(category) ? amounts_by_category.get(category) as number + amount : amount;
-                //     amounts_by_category.set(category, amount);
-                // });
-                console.log("\n")
-                console.log(dataItem["name"])
-                console.log(dataItem["category"])
-                console.log(dataItem["amount"])
                 const newAmount = amounts_by_category.has(category) ? amounts_by_category.get(category) as number + amount : amount;
                 amounts_by_category.set(category, newAmount)
             }
@@ -69,7 +50,7 @@ export const CreditCardFinder = () => {
         
         amounts_by_category.forEach((value: number, key: string) => {
             categories.push(key);
-            amounts.push(value);
+            amounts.push(value || 0);
         });
 
         setCategories(categories);
@@ -85,19 +66,11 @@ export const CreditCardFinder = () => {
 
             categories.map((category: string, index: number) => {
                 if (points.All) {
-                    total += points.All * amounts[index]
+                    total += points.All * amounts[index];
                 } else if (points.hasOwnProperty(category)) {
                     if (points.hasOwnProperty('Shops')) {
-                        console.log('shops')
-                        console.log(points)
-                        console.log(points.Shops)
-                        console.log('Category------', category)
                         const key = Object.keys(points.Shops)[0]
-
-                        console.log(points.Shops[key])
-                        console.log()
-                        const shopsPoints = points.Shops[key]
-                        total += shopsPoints * amounts[index]
+                        total += ((points?.Shops?.[key] as number) * amounts[index])
                     } else {
                         // need to create a type/interface for category
                         // @ts-ignore
@@ -106,8 +79,6 @@ export const CreditCardFinder = () => {
                 } else {
                     total += (points["Everything else"] as number) * amounts[index]
                 }
-                console.log('points', points[category])
-                console.log(total)
             });
 
             return {
@@ -116,6 +87,7 @@ export const CreditCardFinder = () => {
                 fee
             }
         });
+
         setTotalPoints(cardPoints);
         return cardPoints;
     }, [amounts, cards, categories]);
@@ -133,11 +105,13 @@ export const CreditCardFinder = () => {
     }, [getCategories]);
 
     useEffect(() => {
-        const calculation = calculateCards();
-        console.log('here is the calculation:');
-        console.log(calculation);
-        console.log(totalPoints)
-    }, [calculateCards]);
+        if (amounts.length > 0) {
+            const calculation = calculateCards();
+            console.log('here is the calculation:');
+            console.log(calculation);
+            console.log(totalPoints)
+        }
+    }, [amounts, calculateCards]);
 
 
 
