@@ -106,10 +106,7 @@ export const CreditCardFinder = () => {
 
     useEffect(() => {
         if (amounts.length > 0) {
-            const calculation = calculateCards();
             setTotalPoints(calculateCards())
-            console.log('here is the calculation:');
-            console.log(calculation);
         }
     }, [amounts, calculateCards]);
 
