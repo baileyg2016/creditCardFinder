@@ -12,7 +12,7 @@ export const CreditCardFinder = () => {
     const [transformedData, setTransformedData] = useState<Data>([]);
     const [categories, setCategories] = useState<Array<string>>([]);
     const [amounts, setAmounts] = useState<Array<number>>([]);
-    const [totalPoints, setTotalPoints] = useState<Array<{name: string, points: number}>>([]);
+    const [totalPoints, setTotalPoints] = useState<Array<{name: string, points: number, fee: number}>>([]);
 
     const getData = async () => {
         const response = await fetch(`${process.env.API}/api/transactions`, { method: "GET" });
@@ -83,7 +83,7 @@ export const CreditCardFinder = () => {
 
             return {
                 name,
-                points: total,
+                points: Math.round(total),
                 fee
             }
         });
@@ -107,9 +107,9 @@ export const CreditCardFinder = () => {
     useEffect(() => {
         if (amounts.length > 0) {
             const calculation = calculateCards();
+            setTotalPoints(calculateCards())
             console.log('here is the calculation:');
             console.log(calculation);
-            console.log(totalPoints)
         }
     }, [amounts, calculateCards]);
 
@@ -122,19 +122,21 @@ export const CreditCardFinder = () => {
                 <table>
                     <thead>
                         <tr>
-                            <td>Transaction history</td>
+                            <td>Point totals</td>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Category</td>
-                            <td>Transaction</td>
+                            <td>Card</td>
+                            <td>Total Points</td>
+                            <td>Fee</td>
                         </tr>
                         {
-                            categories.map((category: string, index) => (
-                                <tr key={category} className='dataField'>
-                                    <td>{category}</td>
-                                    <td>{amounts[index]}</td>
+                            totalPoints.map(({ name, fee, points}) => (
+                                <tr key={name} className='dataField'>
+                                    <td>{name}</td>
+                                    <td>{points}</td>
+                                    <td>${fee}</td>
                                 </tr>
                             ))
                         }

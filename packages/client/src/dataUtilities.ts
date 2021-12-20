@@ -345,13 +345,13 @@ export const transformTransactionsData = (
   data: TransactionsGetResponse
 ): Array<DataItem> => {
   return data.transactions?.map((t) => {
-    console.log(t)
     const item: DataItem = {
       name: t.name!,
       amount: formatCurrency(t.amount!, t.iso_currency_code),
       date: t.date,
       category : t?.category
     };
+
     return item;
   });
 };
