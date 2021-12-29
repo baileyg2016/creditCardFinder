@@ -1,5 +1,7 @@
 import { Configuration, CountryCode, LinkTokenCreateRequest, PlaidApi, PlaidEnvironments, Products } from 'plaid';
-require('dotenv').config();
+require('dotenv').config({
+  path: '.dev.env',
+});
 
 const PLAID_CLIENT_ID = process.env.PLAID_CLIENT_ID;
 const PLAID_SECRET = process.env.PLAID_SECRET;
