@@ -12,7 +12,9 @@ import {
 } from "plaid";
 
 // read env vars from .env file
-require('dotenv').config();
+require('dotenv').config({
+  path: './.dev.env'
+});
 const cors = require('cors');
 const util = require('util');
 const express = require('express');
@@ -122,6 +124,7 @@ app.post('/api/create_link_token', async function (request, response) {
     response.json(createTokenResponse.data);
   } catch (e) {
     const error: Error = (e as unknown) as Error;
+    console.error(e)
     prettyPrintResponse(error.message);
     return response.json(formatError(error.message));
   }
@@ -195,6 +198,7 @@ app.post('/api/set_access_token', async function (request, response, next) {
     const tokenResponse = await client.itemPublicTokenExchange({
       public_token: publicToken,
     });
+    console.log('token', publicToken)
     prettyPrintResponse(tokenResponse);
     ACCESS_TOKEN = tokenResponse.data.access_token;
     const itemId: string = tokenResponse.data.item_id;
