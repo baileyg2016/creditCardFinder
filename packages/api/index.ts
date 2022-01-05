@@ -12,7 +12,9 @@ import {
 } from "plaid";
 
 // read env vars from .env file
-require('dotenv').config();
+require('dotenv').config({
+  path: './.dev.env'
+});
 const cors = require('cors');
 const util = require('util');
 const express = require('express');
