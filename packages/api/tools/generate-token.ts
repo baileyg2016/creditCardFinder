@@ -41,14 +41,35 @@ if (PLAID_ANDROID_PACKAGE_NAME !== '') {
   configs.android_package_name = PLAID_ANDROID_PACKAGE_NAME;
 }
 
-const getPlaidTestToken = async () => {
+let linkToken = ''
+
+const getPlaidTestLinkToken = async () => {
   try {
     const createTokenResponse = await client.linkTokenCreate(configs);
+    console.log('link token:');
     console.log(createTokenResponse.data);
+    linkToken = createTokenResponse.data.link_token;
   } catch (e) {
     const error: Error = (e as unknown) as Error;
     console.error(error.message);
   }
 }
 
-getPlaidTestToken();
+const getPlaidTestAccessToken = async () => {
+  try {
+    const resp = await client.itemPublicTokenExchange({
+      public_token: linkToken,
+    });
+
+    console.log('access_token')
+    console.log(resp.data)
+  } catch (err) {
+    // @ts-ignore
+    console.error(err.response.data.error_message);
+  }
+};
+
+getPlaidTestLinkToken().then(() => {
+  console.log();
+  getPlaidTestAccessToken();
+});

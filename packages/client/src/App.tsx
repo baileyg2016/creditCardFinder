@@ -62,9 +62,10 @@ const App = () => {
   useEffect(() => {
     const init = async () => {
       const { paymentInitiation } = await getInfo(); // used to determine which path to take when generating token
-      paymentInitiation
+
       // do not generate a new token for OAuth redirect; instead
       // setLinkToken from localStorage
+      console.info(process.env.NODE_ENV)
       if (window.location.href.includes("?oauth_state_id=")) {
         dispatch({
           type: "SET_STATE",
@@ -72,10 +73,21 @@ const App = () => {
             linkToken: localStorage.getItem("link_token"),
           },
         });
-        return;
+      // } else if (process.env.NODE_ENV === 'development') {
+      //   console.log('setting dev state')
+      //   dispatch({
+      //     type: "SET_STATE",
+      //     state: {
+      //       linkToken: localStorage.getItem("link_token"),
+      //       linkSuccess: true,
+      //       isItemAccess: true
+      //     },
+      //   });
+      } else {
+        generateToken(paymentInitiation);
       }
-      generateToken(paymentInitiation);
     };
+
     init();
   }, [dispatch, generateToken, getInfo]);
 
@@ -83,7 +95,7 @@ const App = () => {
     <div className='App'>
       <div className='container'>
         <Header />
-        {linkSuccess && isItemAccess && (
+        {(linkSuccess && isItemAccess)/* || (process.env.NODE_ENV === 'development')*/ && (
           <>
             <CreditCardFinder />
           </>

@@ -48,7 +48,7 @@ const PLAID_ANDROID_PACKAGE_NAME = process.env.PLAID_ANDROID_PACKAGE_NAME || '';
 
 // We store the access_token in memory - in production, store it in a secure
 // persistent data store
-let ACCESS_TOKEN = '';
+let ACCESS_TOKEN = process.env.PLAID_TEST_ACCESS_TOKEN || '';
 let PUBLIC_TOKEN = '';
 let ITEM_ID = '';
 // The payment_id is only relevant for the UK Payment Initiation product.
@@ -191,12 +191,14 @@ app.post(
 // https://plaid.com/docs/#exchange-token-flow
 app.post('/api/set_access_token', async function (request, response, next) {
   const publicToken: string = request.body.public_token;
+  console.log('public_token')
+  console.log(publicToken)
   try {
     const tokenResponse = await client.itemPublicTokenExchange({
       public_token: publicToken,
     });
     prettyPrintResponse(tokenResponse);
-    ACCESS_TOKEN = tokenResponse.data.access_token;
+    ACCESS_TOKEN = ACCESS_TOKEN ? ACCESS_TOKEN : tokenResponse.data.access_token;
     const itemId: string = tokenResponse.data.item_id;
     response.json({
       access_token: ACCESS_TOKEN,
