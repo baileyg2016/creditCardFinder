@@ -7,7 +7,7 @@ import Context from "./context/Context";
 import "./App.scss";
 
 const App = () => {
-  const { linkSuccess, isItemAccess, dispatch } = useContext(Context);
+  const { linkSuccess, linkToken, isItemAccess, dispatch } = useContext(Context);
 
   const getInfo = useCallback(async () => {
     const response = await fetch(`${process.env.API}/api/info`, { method: "POST" });
@@ -59,6 +59,46 @@ const App = () => {
     [dispatch]
   );
 
+  const getAccessToken = React.useCallback(
+    (public_token: string) => {
+      // send public_token to server
+      const setToken = async () => {
+        const response = await fetch(`${process.env.API}/api/set_access_token`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          },
+          body: `public_token=${public_token}`,
+        });
+        if (!response.ok) {
+          dispatch({
+            type: "SET_STATE",
+            state: {
+              itemId: `no item_id retrieved`,
+              accessToken: `no access_token retrieved`,
+              isItemAccess: false,
+            },
+          });
+          return;
+        }
+        const data = await response.json();
+        console.log('setting this state too which is overridding')
+        dispatch({
+          type: "SET_STATE",
+          state: {
+            itemId: data.item_id,
+            accessToken: data.access_token,
+            isItemAccess: true,
+          },
+        });
+      };
+      setToken();
+      dispatch({ type: "SET_STATE", state: { linkSuccess: true } });
+      window.history.pushState("", "", "/");
+    },
+    [dispatch]
+  );
+
   useEffect(() => {
     const init = async () => {
       const { paymentInitiation } = await getInfo(); // used to determine which path to take when generating token
@@ -73,23 +113,25 @@ const App = () => {
             linkToken: localStorage.getItem("link_token"),
           },
         });
-      // } else if (process.env.NODE_ENV === 'development') {
-      //   console.log('setting dev state')
-      //   dispatch({
-      //     type: "SET_STATE",
-      //     state: {
-      //       linkToken: localStorage.getItem("link_token"),
-      //       linkSuccess: true,
-      //       isItemAccess: true
-      //     },
-      //   });
+      } else if (process.env.NODE_ENV === 'development') {
+        
+        dispatch({
+          type: "SET_STATE",
+          state: {
+            linkToken: localStorage.getItem("link_token"),
+            linkSuccess: true,
+            isItemAccess: true
+          },
+        });
+
+        // getAccessToken(localStorage.getItem("link_token") ?? '');
       } else {
         generateToken(paymentInitiation);
       }
     };
 
     init();
-  }, [dispatch, generateToken, getInfo]);
+  }, [dispatch, generateToken, getAccessToken, getInfo]);
 
   return (
     <div className='App'>

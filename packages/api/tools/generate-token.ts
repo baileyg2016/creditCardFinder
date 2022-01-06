@@ -1,9 +1,10 @@
+import axios from 'axios';
 import { Configuration, CountryCode, LinkTokenCreateRequest, PlaidApi, PlaidEnvironments, Products } from 'plaid';
 require('dotenv').config({
   path: '.dev.env',
 });
 
-const PLAID_CLIENT_ID = process.env.PLAID_CLIENT_ID;
+const PLAID_CLIENT_ID = process.env.PLAID_CLIENT_ID || '';
 const PLAID_SECRET = process.env.PLAID_SECRET;
 const PLAID_ENV = process.env.PLAID_ENV || 'sandbox';
 const PLAID_REDIRECT_URI = process.env.PLAID_REDIRECT_URI || '';
@@ -57,19 +58,29 @@ const getPlaidTestLinkToken = async () => {
 
 const getPlaidTestAccessToken = async () => {
   try {
+    // https://plaid.com/docs/api/sandbox/#sandboxpublic_tokencreate
+    const publicTokenResp = await axios.post('https://sandbox.plaid.com/sandbox/public_token/create', {
+        "client_id": PLAID_CLIENT_ID,
+        "secret": PLAID_SECRET,
+        "institution_id": 'ins_3',
+        "initial_products": ['transactions'],
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    
     const resp = await client.itemPublicTokenExchange({
-      public_token: linkToken,
+      public_token: publicTokenResp.data.public_token,
     });
 
     console.log('access_token')
     console.log(resp.data)
   } catch (err) {
     // @ts-ignore
-    console.error(err.response.data.error_message);
+    console.error(err);
   }
 };
 
-getPlaidTestLinkToken().then(() => {
-  console.log();
-  getPlaidTestAccessToken();
-});
+
+getPlaidTestAccessToken();

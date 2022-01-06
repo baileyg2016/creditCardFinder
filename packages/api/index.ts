@@ -124,6 +124,7 @@ app.post('/api/create_link_token', async function (request, response) {
     response.json(createTokenResponse.data);
   } catch (e) {
     const error: Error = (e as unknown) as Error;
+    console.log('getting error in create_link_token')
     prettyPrintResponse(error.message);
     return response.json(formatError(error.message));
   }
@@ -208,6 +209,7 @@ app.post('/api/set_access_token', async function (request, response, next) {
     });
   } catch (e) {
     const error: Error = (e as unknown) as Error;
+    console.log('getting error in set_access_token')
     prettyPrintResponse(error.message);
     return response.json(formatError(error.message));
   }
@@ -233,6 +235,7 @@ app.get('/api/transactions', async function (request, response, next) {
   // Pull transactions for the Item for the last 30 days
   const startDate = moment().subtract(30, 'days').format('YYYY-MM-DD');
   const endDate = moment().format('YYYY-MM-DD');
+  console.log('access_token', ACCESS_TOKEN)
   const configs = {
     access_token: ACCESS_TOKEN,
     start_date: startDate,
@@ -248,6 +251,7 @@ app.get('/api/transactions', async function (request, response, next) {
     response.json(transactionsResponse.data);
   } catch (e) {
     const error: Error = (e as unknown) as Error;
+    console.error(error)
     prettyPrintResponse(error.message);
     return response.json(formatError(error.message));
   }
@@ -450,6 +454,7 @@ const server = app.listen(APP_PORT, function () {
 });
 
 const prettyPrintResponse = (response) => {
+  console.trace('here')
   console.log(util.inspect(response.data, { colors: true, depth: 4 }));
 };
 

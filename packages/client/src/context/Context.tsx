@@ -56,8 +56,17 @@ export const QuickstartProvider: React.FC<{ children: ReactNode }> = (
   ): QuickstartState => {
     switch (action.type) {
       case "SET_STATE":
-        console.log(state)
-        return { ...state, ...action.state };
+        return { 
+          linkSuccess: action.state.linkSuccess || false,
+          isItemAccess: action.state.isItemAccess || false,
+          linkToken: action.state.linkToken || '',
+          accessToken: action.state.accessToken || '',
+          itemId: action.state.itemId || '',
+          isError: action.state.isError || state.isError,
+          backend: action.state.backend || state.backend,
+          products: action.state.products || state.products,
+          linkTokenError: action.state.linkTokenError || state.linkTokenError,
+        };
       default:
         return { ...state };
     }
