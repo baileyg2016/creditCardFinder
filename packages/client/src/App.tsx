@@ -1,13 +1,12 @@
 import React, { useEffect, useContext, useCallback } from "react";
 
-import { Header } from "./components/headers/Headers";
 import { CreditCardFinder } from "./components/credit-card-finder/CreditCardFinder";
 import Context from "./context/Context";
 
 import "./App.scss";
 
 const App = () => {
-  const { linkSuccess, linkToken, isItemAccess, dispatch } = useContext(Context);
+  const { linkSuccess, isItemAccess, dispatch } = useContext(Context);
 
   const getInfo = useCallback(async () => {
     const response = await fetch(`${process.env.API}/api/info`, { method: "POST" });
@@ -36,10 +35,12 @@ const App = () => {
       const response = await fetch(`${process.env.API}${path}`, {
         method: "POST",
       });
+
       if (!response.ok) {
         dispatch({ type: "SET_STATE", state: { linkToken: null } });
         return;
       }
+
       const data = await response.json();
       if (data) {
         if (data.error != null) {
@@ -50,10 +51,13 @@ const App = () => {
               linkTokenError: data.error,
             },
           });
+
           return;
         }
+
         dispatch({ type: "SET_STATE", state: { linkToken: data.link_token } });
       }
+
       localStorage.setItem("link_token", data.link_token); //to use later for Oauth
     },
     [dispatch]
@@ -70,6 +74,7 @@ const App = () => {
           },
           body: `public_token=${public_token}`,
         });
+
         if (!response.ok) {
           dispatch({
             type: "SET_STATE",
@@ -82,7 +87,7 @@ const App = () => {
           return;
         }
         const data = await response.json();
-        console.log('setting this state too which is overridding')
+
         dispatch({
           type: "SET_STATE",
           state: {
@@ -136,8 +141,8 @@ const App = () => {
   return (
     <div className='App'>
       <div className='container'>
-        <Header />
-        {(linkSuccess && isItemAccess)/* || (process.env.NODE_ENV === 'development')*/ && (
+        <h3 className='title'>Credit Card Finder</h3>
+        {linkSuccess && isItemAccess && (
           <>
             <CreditCardFinder />
           </>

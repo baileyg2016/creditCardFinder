@@ -115,7 +115,7 @@ export const CreditCardFinder = () => {
 
     return (    
         <>
-            <h3 className='title'>Find the Credit card for you please</h3>
+            <h3 className='subtitle'>Find the Credit card for you please</h3>
             <div className='CreditCardFinder'>
                 <table>
                     <thead>
