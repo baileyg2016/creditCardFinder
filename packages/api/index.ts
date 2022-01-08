@@ -197,14 +197,14 @@ app.post(
 // https://plaid.com/docs/#exchange-token-flow
 app.post('/api/set_access_token', async function (request, response, next) {
   const publicToken: string = request.body.public_token;
-  console.log('public_token')
-  console.log(publicToken)
+
   try {
     const tokenResponse = await client.itemPublicTokenExchange({
       public_token: publicToken,
     });
-    console.log('token', publicToken)
+
     prettyPrintResponse(tokenResponse);
+    // if we have an access token from env file, discard whatever the server sends
     ACCESS_TOKEN = ACCESS_TOKEN ? ACCESS_TOKEN : tokenResponse.data.access_token;
     const itemId: string = tokenResponse.data.item_id;
     response.json({
@@ -213,8 +213,10 @@ app.post('/api/set_access_token', async function (request, response, next) {
     });
   } catch (e) {
     const error: Error = (e as unknown) as Error;
+
     console.log('getting error in set_access_token')
     prettyPrintResponse(error.message);
+
     return response.json(formatError(error.message));
   }
 });
@@ -453,12 +455,11 @@ app.get('/api/payment', async function (request, response, next) {
   }
 });
 
-const server = app.listen(APP_PORT, function () {
+app.listen(APP_PORT, function () {
   console.log('plaid-quickstart server listening on port ' + APP_PORT);
 });
 
 const prettyPrintResponse = (response) => {
-  console.trace('here')
   console.log(util.inspect(response.data, { colors: true, depth: 4 }));
 };
 

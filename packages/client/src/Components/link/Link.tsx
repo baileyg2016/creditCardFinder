@@ -29,8 +29,8 @@ export const Link = () => {
           });
           return;
         }
+
         const data = await response.json();
-        console.log('setting this state too which is overridding')
         dispatch({
           type: "SET_STATE",
           state: {

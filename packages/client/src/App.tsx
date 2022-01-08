@@ -110,7 +110,6 @@ const App = () => {
 
       // do not generate a new token for OAuth redirect; instead
       // setLinkToken from localStorage
-      console.info(process.env.NODE_ENV)
       if (window.location.href.includes("?oauth_state_id=")) {
         dispatch({
           type: "SET_STATE",
@@ -123,20 +122,17 @@ const App = () => {
         dispatch({
           type: "SET_STATE",
           state: {
-            linkToken: localStorage.getItem("link_token"),
             linkSuccess: true,
             isItemAccess: true
           },
         });
-
-        // getAccessToken(localStorage.getItem("link_token") ?? '');
       } else {
         generateToken(paymentInitiation);
       }
     };
 
     init();
-  }, [dispatch, generateToken, getAccessToken, getInfo]);
+  }, [dispatch, generateToken, getInfo]);
 
   return (
     <div className='App'>
