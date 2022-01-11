@@ -125,7 +125,6 @@ app.post('/api/create_link_token', async function (request, response) {
   } catch (e) {
     const error: Error = (e as unknown) as Error;
 
-    console.log('\ngetting error in create_link_token')
     console.error(e)
 
     prettyPrintResponse(error.message);
@@ -214,7 +213,6 @@ app.post('/api/set_access_token', async function (request, response, next) {
   } catch (e) {
     const error: Error = (e as unknown) as Error;
 
-    console.log('getting error in set_access_token')
     prettyPrintResponse(error.message);
 
     return response.json(formatError(error.message));
@@ -241,7 +239,6 @@ app.get('/api/transactions', async function (request, response, next) {
   // Pull transactions for the Item for the last 30 days
   const startDate = moment().subtract(1, 'year').format('YYYY-MM-DD');
   const endDate = moment().format('YYYY-MM-DD');
-  
   const configs = {
     access_token: ACCESS_TOKEN,
     start_date: startDate,
