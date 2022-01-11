@@ -7,6 +7,8 @@ import { Link } from "../link/Link";
 import Context from "../../context/Context";
 
 import "./Headers.scss";
+import { AccountsContextProvider } from "../../context/AccountsContextProvider";
+import { CreditCardFinder } from "../credit-card-finder/CreditCardFinder";
 
 export const Header = () => {
   const {
@@ -74,28 +76,9 @@ export const Header = () => {
               .
             </h4>
           ) : (
-            <h4 className='subtitle'>
-              <Callout warning>
-                Unable to create an item. Please check your backend server
-              </Callout>
-            </h4>
-          )}
-          <div className='itemAccessContainer'>
-            <p className='itemAccessRow'>
-              <span className='idName'>item_id</span>
-              <span className='tokenText'>{itemId}</span>
-            </p>
-
-            <p className='itemAccessRow'>
-              <span className='idName'>access_token</span>
-              <span className='tokenText'>{accessToken}</span>
-            </p>
-          </div>
-          {isItemAccess && (
-            <p className='requests'>
-              Now that you have an access_token, you can make all of the
-              following requests:
-            </p>
+            <AccountsContextProvider itemId={""} itemName={""} linkToken={""} accessToken={""}>
+              <CreditCardFinder />
+            </AccountsContextProvider>
           )}
         </>
       )}

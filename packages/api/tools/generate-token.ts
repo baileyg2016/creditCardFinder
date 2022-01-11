@@ -42,6 +42,18 @@ if (PLAID_ANDROID_PACKAGE_NAME !== '') {
   configs.android_package_name = PLAID_ANDROID_PACKAGE_NAME;
 }
 
+const getPlaidTestLinkToken = async () => {
+  try {
+    const createTokenResponse = await client.linkTokenCreate(configs);
+
+    console.log('link token:');
+    console.log(createTokenResponse.data, '\n');
+  } catch (e) {
+    const error: Error = (e as unknown) as Error;
+    console.error(error.message);
+  }
+}
+
 const getPlaidTestAccessToken = async () => {
   try {
     // https://plaid.com/docs/api/sandbox/#sandboxpublic_tokencreate
@@ -60,11 +72,12 @@ const getPlaidTestAccessToken = async () => {
       public_token: publicTokenResp.data.public_token,
     });
 
-    console.log(resp.data)
+    console.log('access token:');
+    console.log(resp.data);
   } catch (err) {
     console.error(err);
   }
 };
 
-
+getPlaidTestLinkToken();
 getPlaidTestAccessToken();

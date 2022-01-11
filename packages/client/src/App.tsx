@@ -4,6 +4,8 @@ import { CreditCardFinder } from "./components/credit-card-finder/CreditCardFind
 import Context from "./context/Context";
 
 import "./App.scss";
+import { AccountsContextProvider } from "./context/AccountsContextProvider";
+import { Header } from "./components/headers/Headers";
 
 const App = () => {
   const { linkSuccess, isItemAccess, dispatch } = useContext(Context);
@@ -117,8 +119,7 @@ const App = () => {
             linkToken: localStorage.getItem("link_token"),
           },
         });
-      } else if (process.env.NODE_ENV === 'development') {
-        
+      } else if (process.env.NODE_ENV === 'development' && localStorage.getItem("link_token")) {
         dispatch({
           type: "SET_STATE",
           state: {
@@ -138,10 +139,12 @@ const App = () => {
     <div className='App'>
       <div className='container'>
         <h3 className='title'>Credit Card Finder</h3>
-        {linkSuccess && isItemAccess && (
-          <>
+        {linkSuccess && isItemAccess ? (
+          <AccountsContextProvider accessToken={""} itemId={""} itemName={""} linkToken={""}>
             <CreditCardFinder />
-          </>
+          </AccountsContextProvider>
+        ) : (
+          <Header />
         )}
       </div>
     </div>

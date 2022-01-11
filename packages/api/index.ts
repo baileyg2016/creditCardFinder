@@ -125,7 +125,7 @@ app.post('/api/create_link_token', async function (request, response) {
   } catch (e) {
     const error: Error = (e as unknown) as Error;
 
-    console.log('getting error in create_link_token')
+    console.log('\ngetting error in create_link_token')
     console.error(e)
 
     prettyPrintResponse(error.message);
@@ -239,9 +239,9 @@ app.get('/api/auth', async function (request, response, next) {
 // https://plaid.com/docs/#transactions
 app.get('/api/transactions', async function (request, response, next) {
   // Pull transactions for the Item for the last 30 days
-  const startDate = moment().subtract(30, 'days').format('YYYY-MM-DD');
+  const startDate = moment().subtract(1, 'year').format('YYYY-MM-DD');
   const endDate = moment().format('YYYY-MM-DD');
-  console.log('access_token', ACCESS_TOKEN)
+  
   const configs = {
     access_token: ACCESS_TOKEN,
     start_date: startDate,
@@ -251,6 +251,7 @@ app.get('/api/transactions', async function (request, response, next) {
       offset: 0,
     },
   };
+
   try {
     const transactionsResponse = await client.transactionsGet(configs);
     prettyPrintResponse(transactionsResponse);
@@ -275,18 +276,23 @@ app.get(
       start_date: startDate,
       end_date: endDate,
     };
+
     try {
       const investmentTransactionsResponse = await client.investmentsTransactionsGet(
         configs,
       );
+
       prettyPrintResponse(investmentTransactionsResponse);
+
       response.json({
         error: null,
         investment_transactions: investmentTransactionsResponse.data,
       });
     } catch (e) {
       const error: Error = (e as unknown) as Error;
+
       prettyPrintResponse(error.message);
+
       return response.json(formatError(error.message));
     }
   },
@@ -446,11 +452,14 @@ app.get('/api/payment', async function (request, response, next) {
     const paymentGetResponse = await client.paymentInitiationPaymentGet({
       payment_id: PAYMENT_ID,
     });
+
     prettyPrintResponse(paymentGetResponse);
     response.json({ error: null, payment: paymentGetResponse.data });
   } catch (e) {
     const error: Error = (e as unknown) as Error;
+
     prettyPrintResponse(error.message);
+
     return response.json(formatError(error.message));
   }
 });

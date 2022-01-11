@@ -31,6 +31,7 @@ export const Link = () => {
         }
 
         const data = await response.json();
+
         dispatch({
           type: "SET_STATE",
           state: {
@@ -62,6 +63,8 @@ export const Link = () => {
 
   const { open, ready } = usePlaidLink(config);
 
+
+  
   useEffect(() => {
     if (isOauth && ready) {
       open();

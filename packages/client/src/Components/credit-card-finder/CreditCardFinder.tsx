@@ -8,12 +8,14 @@ import {
 } from "../../dataUtilities";
 import cards from '../../creditCards/creditCards.json';
 import { Card } from "../card/Card";
+import { Link } from "../link/Link";
 
 export const CreditCardFinder = () => {
+    const [showLink, setShowLink] = useState(false);
     const [transformedData, setTransformedData] = useState<Data>([]);
     const [categories, setCategories] = useState<Array<string>>([]);
     const [amounts, setAmounts] = useState<Array<number>>([]);
-    const [totalPoints, setTotalPoints] = useState<Array<{name: string, points: number, fee: number}>>([]);
+    const [totalPoints, setTotalPoints] = useState<Array<{name: string, points: number, fee: number, referralLink?: string}>>([]);
 
     const getData = async () => {
         const response = await fetch(`${process.env.API}/api/transactions`, { method: "GET" });
@@ -34,15 +36,13 @@ export const CreditCardFinder = () => {
             const amountString = dataItem["amount"] ?? 0;
             
             let amount : number = +(amountString.replace("USD", ""));
-    
-            if (category == null) {
-                return; 
-            }
-            else {
+            
+            if (category) {
                 const newAmount = amounts_by_category.has(category) ? amounts_by_category.get(category) as number + amount : amount;
                 amounts_by_category.set(category, newAmount)
+                return amounts_by_category
             }
-            return amounts_by_category;
+            return null;
         }); 
     
     
@@ -59,7 +59,7 @@ export const CreditCardFinder = () => {
     }, [transformedData]);
 
     const calculateCards = useCallback(() => {
-        const cardPoints = cards.cards.map(({ name, points, fee }, _index) => {
+        const cardPoints = cards.cards.map(({ name, points, fee, referralLink }, _index) => {
             let total = 0;
 
             // need to do some brainstorming and change how i am storing the data 
@@ -85,13 +85,17 @@ export const CreditCardFinder = () => {
             return {
                 name,
                 points: Math.round(total),
-                fee
+                fee,
+                referralLink,
             }
         });
 
-        setTotalPoints(cardPoints);
-        return cardPoints;
+        return cardPoints.sort((a, b) => b.points - a.points);
     }, [amounts, categories]);
+
+    const onNewSignInClick = () => {
+        setShowLink(!showLink);
+    }
 
     useEffect(() => {
         const init = async () => {
@@ -110,8 +114,6 @@ export const CreditCardFinder = () => {
             setTotalPoints(calculateCards())
         }
     }, [amounts, calculateCards]);
-
-
 
     return (    
         <>
@@ -135,12 +137,19 @@ export const CreditCardFinder = () => {
                                     <td>{card.name}</td>
                                     <td>{card.points}</td>
                                     <td>${card.fee}</td>
+                                    {
+                                        card.referralLink && <td><a href="https://capital.one/39oERuu">Apply</a></td>
+                                    }
                                 </tr>
                                 // <Card cardInfo={{...card, id: index}}  />
                             ))
                         }
                     </tbody>
                 </table>
+                <div>
+                    <button onClick={onNewSignInClick}>Sign in with another account</button>
+                    {showLink && <Link />}
+                </div>
             </div>  
         </>
     )
