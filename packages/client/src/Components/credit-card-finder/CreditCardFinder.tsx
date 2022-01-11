@@ -7,6 +7,7 @@ import {
     transformTransactionsData,
 } from "../../dataUtilities";
 import cards from '../../creditCards/creditCards.json';
+import { Card } from "../card/Card";
 
 export const CreditCardFinder = () => {
     const [transformedData, setTransformedData] = useState<Data>([]);
@@ -90,7 +91,7 @@ export const CreditCardFinder = () => {
 
         setTotalPoints(cardPoints);
         return cardPoints;
-    }, [amounts, cards, categories]);
+    }, [amounts, categories]);
 
     useEffect(() => {
         const init = async () => {
@@ -114,7 +115,7 @@ export const CreditCardFinder = () => {
 
     return (    
         <>
-            <h3 className='title'>Find the Credit card for you please</h3>
+            <h3 className='subtitle'>Find the Credit card for you please</h3>
             <div className='CreditCardFinder'>
                 <table>
                     <thead>
@@ -129,12 +130,13 @@ export const CreditCardFinder = () => {
                             <td>Fee</td>
                         </tr>
                         {
-                            totalPoints.map(({ name, fee, points}) => (
-                                <tr key={name} className='dataField'>
-                                    <td>{name}</td>
-                                    <td>{points}</td>
-                                    <td>${fee}</td>
+                            totalPoints.map((card, index) => (
+                                <tr key={card.name} className='dataField'>
+                                    <td>{card.name}</td>
+                                    <td>{card.points}</td>
+                                    <td>${card.fee}</td>
                                 </tr>
+                                // <Card cardInfo={{...card, id: index}}  />
                             ))
                         }
                     </tbody>

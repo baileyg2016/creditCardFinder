@@ -1,6 +1,5 @@
 import React, { useEffect, useContext, useCallback } from "react";
 
-import { Header } from "./components/headers/Headers";
 import { CreditCardFinder } from "./components/credit-card-finder/CreditCardFinder";
 import Context from "./context/Context";
 
@@ -36,10 +35,12 @@ const App = () => {
       const response = await fetch(`${process.env.API}${path}`, {
         method: "POST",
       });
+
       if (!response.ok) {
         dispatch({ type: "SET_STATE", state: { linkToken: null } });
         return;
       }
+
       const data = await response.json();
       if (data) {
         if (data.error != null) {
@@ -50,11 +51,55 @@ const App = () => {
               linkTokenError: data.error,
             },
           });
+
           return;
         }
+
         dispatch({ type: "SET_STATE", state: { linkToken: data.link_token } });
       }
+
       localStorage.setItem("link_token", data.link_token); //to use later for Oauth
+    },
+    [dispatch]
+  );
+
+  const getAccessToken = React.useCallback(
+    (public_token: string) => {
+      // send public_token to server
+      const setToken = async () => {
+        const response = await fetch(`${process.env.API}/api/set_access_token`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          },
+          body: `public_token=${public_token}`,
+        });
+
+        if (!response.ok) {
+          dispatch({
+            type: "SET_STATE",
+            state: {
+              itemId: `no item_id retrieved`,
+              accessToken: `no access_token retrieved`,
+              isItemAccess: false,
+            },
+          });
+          return;
+        }
+        const data = await response.json();
+
+        dispatch({
+          type: "SET_STATE",
+          state: {
+            itemId: data.item_id,
+            accessToken: data.access_token,
+            isItemAccess: true,
+          },
+        });
+      };
+      setToken();
+      dispatch({ type: "SET_STATE", state: { linkSuccess: true } });
+      window.history.pushState("", "", "/");
     },
     [dispatch]
   );
@@ -62,7 +107,7 @@ const App = () => {
   useEffect(() => {
     const init = async () => {
       const { paymentInitiation } = await getInfo(); // used to determine which path to take when generating token
-      paymentInitiation
+
       // do not generate a new token for OAuth redirect; instead
       // setLinkToken from localStorage
       if (window.location.href.includes("?oauth_state_id=")) {
@@ -72,17 +117,27 @@ const App = () => {
             linkToken: localStorage.getItem("link_token"),
           },
         });
-        return;
+      } else if (process.env.NODE_ENV === 'development') {
+        
+        dispatch({
+          type: "SET_STATE",
+          state: {
+            linkSuccess: true,
+            isItemAccess: true
+          },
+        });
+      } else {
+        generateToken(paymentInitiation);
       }
-      generateToken(paymentInitiation);
     };
+
     init();
   }, [dispatch, generateToken, getInfo]);
 
   return (
     <div className='App'>
       <div className='container'>
-        <Header />
+        <h3 className='title'>Credit Card Finder</h3>
         {linkSuccess && isItemAccess && (
           <>
             <CreditCardFinder />

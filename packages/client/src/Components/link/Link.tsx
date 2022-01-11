@@ -29,6 +29,7 @@ export const Link = () => {
           });
           return;
         }
+
         const data = await response.json();
         dispatch({
           type: "SET_STATE",

@@ -50,7 +50,7 @@ const PLAID_ANDROID_PACKAGE_NAME = process.env.PLAID_ANDROID_PACKAGE_NAME || '';
 
 // We store the access_token in memory - in production, store it in a secure
 // persistent data store
-let ACCESS_TOKEN = '';
+let ACCESS_TOKEN = process.env.PLAID_TEST_ACCESS_TOKEN || '';
 let PUBLIC_TOKEN = '';
 let ITEM_ID = '';
 // The payment_id is only relevant for the UK Payment Initiation product.
@@ -124,7 +124,9 @@ app.post('/api/create_link_token', async function (request, response) {
     response.json(createTokenResponse.data);
   } catch (e) {
     const error: Error = (e as unknown) as Error;
+
     console.error(e)
+
     prettyPrintResponse(error.message);
     return response.json(formatError(error.message));
   }
@@ -194,13 +196,15 @@ app.post(
 // https://plaid.com/docs/#exchange-token-flow
 app.post('/api/set_access_token', async function (request, response, next) {
   const publicToken: string = request.body.public_token;
+
   try {
     const tokenResponse = await client.itemPublicTokenExchange({
       public_token: publicToken,
     });
-    console.log('token', publicToken)
+
     prettyPrintResponse(tokenResponse);
-    ACCESS_TOKEN = tokenResponse.data.access_token;
+    // if we have an access token from env file, discard whatever the server sends
+    ACCESS_TOKEN = ACCESS_TOKEN ? ACCESS_TOKEN : tokenResponse.data.access_token;
     const itemId: string = tokenResponse.data.item_id;
     response.json({
       access_token: ACCESS_TOKEN,
@@ -208,7 +212,9 @@ app.post('/api/set_access_token', async function (request, response, next) {
     });
   } catch (e) {
     const error: Error = (e as unknown) as Error;
+
     prettyPrintResponse(error.message);
+
     return response.json(formatError(error.message));
   }
 });
@@ -233,6 +239,7 @@ app.get('/api/transactions', async function (request, response, next) {
   // Pull transactions for the Item for the last 30 days
   const startDate = moment().subtract(30, 'days').format('YYYY-MM-DD');
   const endDate = moment().format('YYYY-MM-DD');
+
   const configs = {
     access_token: ACCESS_TOKEN,
     start_date: startDate,
@@ -248,6 +255,7 @@ app.get('/api/transactions', async function (request, response, next) {
     response.json(transactionsResponse.data);
   } catch (e) {
     const error: Error = (e as unknown) as Error;
+    console.error(error)
     prettyPrintResponse(error.message);
     return response.json(formatError(error.message));
   }
@@ -445,7 +453,7 @@ app.get('/api/payment', async function (request, response, next) {
   }
 });
 
-const server = app.listen(APP_PORT, function () {
+app.listen(APP_PORT, function () {
   console.log('plaid-quickstart server listening on port ' + APP_PORT);
 });
 
