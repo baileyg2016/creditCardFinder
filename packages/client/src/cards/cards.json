@@ -1,0 +1,60 @@
+[
+  {
+    "name": "Capital One Venture",
+    "points": {
+      "All": 2
+    },
+    "fee": 95
+  },
+  {
+    "name": "Chase Sapphire Reserve",
+    "points": {
+      "Food and Drink": 3,
+      "Travel": 3,
+      "Everything else": 1
+    },
+    "fee": 550
+  },
+  {
+    "name": "Chase Sapphire Preferred",
+    "points": {
+      "Food and Drink": 3,
+      "Travel": 2,
+      "Online Grocery": 3,
+      "Streaming": 3,
+      "Everything else": 1
+    },
+    "fee": 95
+  },
+  {
+    "name": "Chase Freedom Unlimited",
+    "points": {
+      "Food and Drink": 3,
+      "Shops": {
+        "Pharmacies": 3
+      },
+      "Everything else": 1.5
+    },
+    "fee": 0
+  },
+  {
+    "name": "Amex Gold",
+    "points": {
+      "Food and Drink": 4,
+      "Groceries": 4,
+      "Everything else": 1
+    },
+    "fee": 250
+  },
+  {
+    "name": "Amex Platinum",
+    "points": {
+      "Travel": 5,
+      "Shops": {
+        "Hotels and Motels": 5
+      },
+      "Everything else": 1
+    },
+    "fee": 695
+  }
+]

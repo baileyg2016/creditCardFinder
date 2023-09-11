@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useCallback } from "react";
 
-import { CreditCardFinder } from "./components/credit-card-finder/CreditCardFinder";
+import { Header } from './Components/headers/Headers';
+import { CreditCardFinder } from "./Components/credit-card-finder/CreditCardFinder";
 import Context from "./context/Context";
 
 import "./App.scss";
@@ -118,7 +119,6 @@ const App = () => {
           },
         });
       } else if (process.env.NODE_ENV === 'development') {
-        
         dispatch({
           type: "SET_STATE",
           state: {
@@ -138,6 +138,7 @@ const App = () => {
     <div className='App'>
       <div className='container'>
         <h3 className='title'>Credit Card Finder</h3>
+        <Header />
         {linkSuccess && isItemAccess && (
           <>
             <CreditCardFinder />

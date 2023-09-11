@@ -10,7 +10,7 @@ import {
   PaymentInitiationPaymentGetResponse,
   AssetReportGetResponse,
   AssetReport,
-} from "plaid/dist/api";
+} from "plaid";
 
 const formatCurrency = (
   number: number | null | undefined,
@@ -115,7 +115,8 @@ export type DataItem =
   | ItemDataItem
   | PaymentDataItem
   | AssetsDataItem
-  | CategoryAmountDataItem;
+  | CategoryAmountDataItem
+  | IdentityDataItem;
 
 export type Data = Array<DataItem>;
 
@@ -455,7 +456,7 @@ export const transformLiabilitiesData = (data: LiabilitiesGetResponse) => {
     const obj: DataItem = {
       name: account.name,
       type: "credit card",
-      date: credit.last_payment_date,
+      date: credit.last_payment_date ?? "",
       amount: formatCurrency(
         credit.last_payment_amount,
         account.balances.iso_currency_code
@@ -558,7 +559,7 @@ interface AssetResponseData {
 
 export const transformAssetsData = (data: AssetResponseData) => {
   const assetItems = data.json.items;
-  return assetItems.flatMap((item) => {
+  return assetItems.map((item) => {
     return item.accounts.map((account) => {
       const balance: number | null | undefined =
         account.balances.available || account.balances.current;

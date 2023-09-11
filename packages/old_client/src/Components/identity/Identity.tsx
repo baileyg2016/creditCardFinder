@@ -1,8 +1,7 @@
 import React from "react";
 
-import { DataItem, Categories } from "../../dataUtilities";
-
 import "./Identity.styles.scss";
+import { Categories, DataItem } from "../../dataUtilities";
 
 interface Props {
   data: Array<DataItem>;

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Button from "plaid-threads/Button";
 import Note from "plaid-threads/Note";
 
-import { Table } from "../table/Table";
-import { Error } from "../error/Error";
+import { Table } from "../Table/Table";
+import { Error } from "../Error/Error";
 import { DataItem, Categories, ErrorDataItem, Data } from "../../dataUtilities";
 
 import "./Endpoint.scss";

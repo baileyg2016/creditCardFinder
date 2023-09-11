@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 
-import Endpoint from "../endpoint/Endpoint";
+import { Endpoint } from "../endpoint/Endpoint";
 import Context from "../../context/Context";
 import ProductTypesContainer from "./product-types-container/ProductTypesContainer";
 import {

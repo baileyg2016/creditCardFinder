@@ -7,7 +7,6 @@ import {
     transformTransactionsData,
 } from "../../dataUtilities";
 import cards from '../../creditCards/creditCards.json';
-import { Card } from "../card/Card";
 
 export const CreditCardFinder = () => {
     const [transformedData, setTransformedData] = useState<Data>([]);
@@ -70,6 +69,7 @@ export const CreditCardFinder = () => {
                     total += points.All * amounts[index];
                 } else if (points.hasOwnProperty(category)) {
                     if (points.hasOwnProperty('Shops')) {
+                        console.log(points)
                         const key = Object.keys(points.Shops)[0]
                         total += ((points?.Shops?.[key] as number) * amounts[index])
                     } else {

@@ -1,14 +1,14 @@
-import { resolve } from 'path';
-import webpack from 'webpack';
+// import { resolve } from 'path';
+const resolve  = require('path').resolve;
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const dotenv = require('dotenv');
-import openBrowser from "react-dev-utils/openBrowser";
 
 module.exports = () => {
 
   const env = dotenv.config().parsed;
 
-  const envKeys = Object.keys(env).reduce((prev: any, next: any) => {
+  const envKeys = Object.keys(env).reduce((prev, next) => {
     prev[`process.env.${next}`] = JSON.stringify(env[next]);
     return prev;
   }, {});
@@ -30,8 +30,13 @@ module.exports = () => {
     module: {
       rules: [
         {
-          test: /\.(js|ts)x?$/,
-          use: 'babel-loader',
+          test: /\.ts$/,
+          loader: 'ts-loader',
+          exclude: /node_modules/,
+        },
+        {
+          test: /\.[jt]sx?$/,
+          loader: 'babel-loader',
           exclude: /node_modules/,
         },
         {

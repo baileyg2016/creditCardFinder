@@ -1,6 +1,6 @@
 import React from "react";
 
-import Endpoint from "../endpoint/Endpoint";
+import { Endpoint } from "../endpoint/Endpoint";
 import ProductTypesContainer from "./product-types-container/ProductTypesContainer";
 import {
   transformItemData,

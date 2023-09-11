@@ -4,7 +4,6 @@
   "description": "Helps tell you which credit card you would benefit from the most based on your spending history.",
   "repository": "https://github.com/baileyg2016/creditCardFinder.git",
   "license": "MIT",
-  "workspaces": ["packages/api", "packages/client"],
   "private": "true",
   "scripts": {
     "start:client": "cd packages/client && yarn start && cd ../..",

@@ -100,6 +100,7 @@ app.post('/api/info', function (request, response, next) {
 // Create a link token with configs which we can then use to initialize Plaid Link client-side.
 // See https://plaid.com/docs/#create-link-token
 app.post('/api/create_link_token', async function (request, response) {
+  console.log('hit this')
   const configs: LinkTokenCreateRequest = {
     user: {
       // This should correspond to a unique id for the current user.
