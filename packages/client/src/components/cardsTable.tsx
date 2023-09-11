@@ -19,18 +19,18 @@ const columns: Column[] = [
   // { id: 'icon', label: 'Icon', minWidth: 100 },
   { id: 'name', label: 'Name', minWidth: 170 },
   {
-    id: 'pointsToMoney',
-    label: 'Points to Money',
-    minWidth: 170,
-    align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
-  },
-  {
     id: 'totalPoints',
     label: 'Total Points',
     minWidth: 170,
     align: 'right',
     format: (value: number) => value.toFixed(2),
+  },
+  {
+    id: 'pointsToMoney',
+    label: 'Points to Money',
+    minWidth: 170,
+    align: 'right',
+    format: (value: number) => value.toLocaleString('en-US'),
   },
   {
     id: 'costAfterFee',
@@ -41,7 +41,7 @@ const columns: Column[] = [
   }
 ];
 
-type CardPoints = { [key: string]: number, fee: number };
+type CardPoints = { [key: string]: { points: number, fee: number }}
 
 interface CardsTableProps {
   cardPoints: CardPoints;
@@ -61,7 +61,7 @@ export default function CardsTable({ cardPoints }: CardsTableProps) {
   // };
 
   return (
-    <Paper sx={{ width: '100%' }}>
+    <Paper sx={{ width: '90%', margin: 'auto' }} elevation={3}>
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -86,12 +86,12 @@ export default function CardsTable({ cardPoints }: CardsTableProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.entries(cardPoints).sort((a, b) => b[1] - a[1]).map(([card, points]) => (
+            {Object.entries(cardPoints).map(([card, info]) => (
               <TableRow hover key={card}>
-                <TableCell align='right'>{card}</TableCell>
-                <TableCell align='right'>${Math.floor(points / 100)}</TableCell>
-                <TableCell align='right'>{Math.floor(points)}</TableCell>
-                <TableCell align='right'>${Math.floor(points / 100) - cardPoints.fee}</TableCell>
+                <TableCell align='left'>{card}</TableCell>
+                <TableCell align='right'>{Math.floor(info.points)}</TableCell>
+                <TableCell align='right'>${Math.floor(info.points / 100)}</TableCell>
+                <TableCell align='right'>${Math.floor(info.points / 100) - info.fee}</TableCell>
               </TableRow>
             ))}
           </TableBody>

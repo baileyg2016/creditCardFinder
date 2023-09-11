@@ -5,6 +5,8 @@ import { sessionOptions } from '../lib/plaid';
 import { Transaction } from 'plaid';
 import creditCards from '../cards/cards.json';
 import CardsTable from '../components/cardsTable';
+import BasicCard from '../components/basicCard';
+import { Box, Grid, Paper, styled } from '@mui/material';
 
 export type Card = {
   name: string;
@@ -12,10 +14,21 @@ export type Card = {
   fee: number;
 }
 
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
+
 const Transactions: NextPage<{ access_token: string }> = ({ access_token }) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [bestCard, setBestCard] = useState<string>('');
-  const [cardPoints, setCardPoints] = useState<{ [key: string]: number, fee: number }>({});
+  const [topPoints, setTopPoints] = useState<number>(0);
+  const [bestCardAfterFee, setBestCardAfterFee] = useState<string>('');
+  const [topPointsAfterFee, setTopPointsAfterFee] = useState<number>(0);
+  const [cardPoints, setCardPoints] = useState<{ [key: string]: { points: number, fee: number }}>({});
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -32,7 +45,6 @@ const Transactions: NextPage<{ access_token: string }> = ({ access_token }) => {
       });
       
       const data = await response.json();
-      console.log(data);
       setTransactions(data.transactions);
     };
 
@@ -42,7 +54,7 @@ const Transactions: NextPage<{ access_token: string }> = ({ access_token }) => {
   useEffect(() => {
     const calculateBestCard = () => {
       let spendingHabits: any = {};
-      let pointsPerCard: { [key: string]: number } = {}; // Renamed variable
+      let pointsPerCard: { [key: string]: { points: number, fee: number } } = {}; // Renamed variable
   
       transactions.forEach((transaction) => {
         if (transaction.category) {
@@ -56,6 +68,8 @@ const Transactions: NextPage<{ access_token: string }> = ({ access_token }) => {
   
       let maxPoints = 0;
       let bestCard = '';
+      let bestCardAfterFee = '';
+      let bestPointsAfterFee = -Infinity;
   
       creditCards.forEach((card) => {
         let cardPoints = 0;
@@ -72,14 +86,28 @@ const Transactions: NextPage<{ access_token: string }> = ({ access_token }) => {
           maxPoints = cardPoints;
           bestCard = card.name;
         }
+
+        const cost = (cardPoints / 100) - card.fee;
+        if (cost > bestPointsAfterFee) {
+          bestPointsAfterFee = cost;
+          bestCardAfterFee = card.name;
+
+        }
   
+        pointsPerCard[card.name] = { points: 0, fee: 0 };
+
+        console.log(card.name, `${(cardPoints / 100)} - ${card.fee}`, (cardPoints / 100) - card.fee, bestPointsAfterFee)
+
         // Store the points for each card
-        pointsPerCard[card.name] = cardPoints; // Use the renamed variable
-        pointsPerCard['fee'] = card.fee; // Subtract the fee
+        pointsPerCard[card.name].points = cardPoints; // Use the renamed variable
+        pointsPerCard[card.name].fee = card.fee; // Subtract the fee
       });
   
       setBestCard(bestCard);
       setCardPoints(pointsPerCard); // Update the cardPoints state variable
+      setBestCardAfterFee(bestCardAfterFee);
+      setTopPoints(maxPoints);
+      setTopPointsAfterFee(bestPointsAfterFee);
     };
   
     if (transactions.length > 0) {
@@ -131,23 +159,16 @@ const Transactions: NextPage<{ access_token: string }> = ({ access_token }) => {
 
   return (
     <div>
-      <h1>Best Credit Card for You: {bestCard}</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Card</th>
-            <th>Points</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.entries(cardPoints).map(([card, points]) => (
-            <tr key={card}>
-              <td>{card}</td>
-              <td>{points}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Box sx={{ flexGrow: 1 }}>
+        <Grid container direction='row' justifyContent='center' rowSpacing={2} sx={{ flexGrow: 1 }}>
+          <Grid item>
+            <BasicCard title='Best Card Total Points' cardName={bestCard} points={Math.floor(topPoints)} />
+          </Grid>
+          <Grid item>
+            <BasicCard title='Best Card Total Points After Fee' cardName={bestCardAfterFee} points={Math.floor(topPointsAfterFee)} />
+          </Grid>
+        </Grid>
+      </Box>
       <CardsTable cardPoints={cardPoints} />
     </div>
   );
